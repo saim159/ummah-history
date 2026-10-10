@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scholars & Luminaries — স্কলার ও মনীষী | Ummah Chronicles</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scholars.css">
+</head>
+<body data-lang="bn">
+<header id="hdr"></header>
+<div class="top">
+ <h1 id="h1"></h1>
+ <p id="sub"></p>
+ <div class="sb"><input id="q" type="search" autocomplete="off"></div>
+</div>
+<main>
+ <div class="chips" id="chips"></div>
+ <div class="count" id="count"></div>
+ <div class="grid" id="grid"></div>
+</main>
+<footer id="ftr"></footer>
+<script src="scholars-data.js"></script>
+<script src="site.js"></script>
+<script>
+let cat="all";
+const ALL=Object.keys(P);
+const hay={};
+ALL.forEach(id=>{hay[id]=norm(P[id].join(" ")+" "+(CATS[id]||[]).map(g=>GROUPS[g].slice(0,2).join(" ")).join(" "))});
+window.draw=function(){
+ const t=UI[lang];header();
+ $("#h1").textContent=t.title;$("#sub").textContent=t.sub;$("#q").placeholder=t.ph;
+ $("#chips").innerHTML=`<button class="chip ${cat==='all'?'on':''}" onclick="cat='all';draw()">${t.all} (${ALL.length})</button>`+
+  Object.keys(GROUPS).map(g=>`<button class="chip ${cat===g?'on':''}" style="--c:${GROUPS[g][2]}" onclick="cat='${g}';draw()">${gname(g)} (${G[g].length})</button>`).join("");
+ const q=norm($("#q").value);
+ const list=ALL.filter(id=>(cat==="all"||(CATS[id]||[]).includes(cat))&&(!q||hay[id].includes(q)));
+ $("#count").textContent=list.length+" "+t.found;
+ $("#grid").innerHTML=list.length?list.map(id=>`<a class="sc" href="scholar.html?id=${id}">${pic(id)}<div class="bd"><h3>${nm(id)}</h3>${P[id][2]?`<div class="ar">${P[id][2]}</div>`:""}${role(id)?`<div class="rl">${role(id)}</div>`:""}<div>${(CATS[id]||[]).slice(0,3).map(g=>`<span class="mini">${gname(g)}</span>`).join("")}</div>${BIO[id]?`<div class="badge">● ${t.bio}</div>`:""}</div></a>`).join(""):`<div class="empty">${t.none}</div>`;
+};
+$("#q").addEventListener("input",()=>{draw();$("#q").focus()});
+draw();
+</script>
+</body>
+</html>
