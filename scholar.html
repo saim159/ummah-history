@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scholar — Ummah Chronicles</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scholars.css">
+</head>
+<body data-lang="bn">
+<header id="hdr"></header>
+<div class="prof" id="prof"></div>
+<footer id="ftr"></footer>
+<script src="scholars-data.js"></script>
+<script src="site.js"></script>
+<script>
+const id=new URLSearchParams(location.search).get("id");
+window.draw=function(){
+ const t=UI[lang];header();
+ if(!P[id]){$("#prof").innerHTML=`<p>${t.nf}</p><p><a href="scholars.html">${t.back}</a></p>`;return}
+ document.title=nm(id)+" — Ummah Chronicles";
+ const b=BIO[id],bl=b&&b[lang];
+ const im=IMG[id];
+ let credit="";
+ if(im&&!NO_PORTRAIT.includes(id))credit=`<div class="credit">${t.credit}: ${im.credit||""} · ${im.license||""} · <a href="${im.page||'#'}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`;
+ else if(NO_PORTRAIT.includes(id))credit=`<div class="credit">${t.noportrait}</div>`;
+ else credit=`<div class="credit">${t.imgnote}</div>`;
+ let h=`<p><a href="scholars.html">${t.back}</a></p><div class="hd"><div>${pic(id)}${credit}</div><div>
+  <h1>${nm(id)}</h1>${P[id][2]?`<div class="ar">${P[id][2]}</div>`:""}
+  ${sec(id)&&lang==="bn"?`<div style="color:var(--mute)">${sec(id)}</div>`:""}
+  ${b?`<p style="margin-top:8px"><b>${t.years}:</b> ${b.years[0]} – ${b.years[1]} CE${bl&&bl.born?`<br><b>${t.born}:</b> ${bl.born}`:""}</p>`:""}
+  ${role(id)?`<p>${role(id)}</p>`:""}
+  <div>${(CATS[id]||[]).map(g=>`<span class="mini">${gname(g)}</span>`).join("")}</div></div></div>`;
+ if(bl){
+  h+=`<h2>${t.bio}</h2>${bl.text.map(p=>`<p>${p}</p>`).join("")}<h2>${t.works}</h2><ul>${bl.works.map(w=>`<li>${w}</li>`).join("")}</ul>
+  <h2>${t.src}</h2><ul>${b.sources.map(s=>`<li>${s}</li>`).join("")}</ul><div class="note">${t.srcnote}</div>`;
+ }else h+=`<div class="soon">${t.soon}</div>`;
+ $("#prof").innerHTML=h;
+};
+draw();
+</script>
+</body>
+</html>
