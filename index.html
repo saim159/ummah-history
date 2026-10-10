@@ -22,7 +22,12 @@ header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 9
 .nav a.l:hover{color:var(--gold)}
 .tools{display:flex;gap:8px;align-items:center}
 select,button.t{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer;font:inherit;font-size:.85rem}
-.hero{position:relative;min-height:88vh;display:grid;place-items:center;text-align:center;padding:60px 20px;overflow:hidden;background:radial-gradient(circle at 50% 30%,#14584a 0,#0a2a25 55%,#061513 100%);color:#f3ead0}
+.hero{position:relative;min-height:88vh;display:grid;place-items:center;text-align:center;padding:60px 20px;overflow:hidden;background:linear-gradient(180deg,rgba(6,21,19,.62),rgba(8,36,31,.82)),url("https://commons.wikimedia.org/wiki/Special:FilePath/Cordoba%2C_la_Mezquita_-_Mihrab.jpg?width=1800") center/cover no-repeat,radial-gradient(circle at 50% 30%,#14584a 0,#0a2a25 55%,#061513 100%);color:#f3ead0}
+.imgcredit{position:absolute;bottom:62px;right:14px;font-size:.7rem;opacity:.75;z-index:2}
+.imgcredit a{color:#e6bf6a}
+.sch{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0 22px}
+.sch a{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--ink);font-size:.9rem}
+.sch a:hover{box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .hero svg.pattern{position:absolute;inset:0;width:100%;height:100%;opacity:.12}
 .hero .in{position:relative;max-width:820px}
 .bismi{font-family:'Amiri',serif;font-size:2rem;color:#e6bf6a;margin-bottom:10px}
@@ -66,6 +71,7 @@ footer{background:#061513;color:#b8c4bf;text-align:center;padding:36px 20px;font
  <a class="logo" href="#top">☪ Ummah Chronicles</a>
  <a class="l" href="#timeline" data-i18n="nav_timeline"></a>
  <a class="l" href="#volumes" data-i18n="nav_volumes"></a>
+ <a class="l" href="scholars.html" data-i18n="nav_scholars"></a>
  <a class="l" href="#map-sec" data-i18n="nav_map"></a>
  <a class="l" href="#glossary" data-i18n="nav_glossary"></a>
  <a class="l" href="#refs" data-i18n="nav_refs"></a>
@@ -90,6 +96,7 @@ footer{background:#061513;color:#b8c4bf;text-align:center;padding:36px 20px;font
   <a class="btn" href="#timeline" data-i18n="cta1"></a>
   <a class="btn o" href="#map-sec" data-i18n="cta2"></a>
  </div>
+ <div class="imgcredit"><span data-i18n="img_credit"></span> · Ruggero Poggianella · CC BY-SA 2.0 · <a href="https://commons.wikimedia.org/wiki/File:Cordoba,_la_Mezquita_-_Mihrab.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></div>
 </div>
 
 <div class="stats">
@@ -117,6 +124,12 @@ footer{background:#061513;color:#b8c4bf;text-align:center;padding:36px 20px;font
  <div id="map"></div>
 </section>
 
+<section id="scholars">
+ <h2 data-i18n="sc_h"></h2><p class="sub" data-i18n="sc_s"></p>
+ <div class="sch" id="schcats"></div>
+ <a class="btn" style="background:var(--green);color:#fff" href="scholars.html" data-i18n="sc_cta"></a>
+</section>
+
 <section id="glossary" style="background:var(--bg2);max-width:none">
  <div style="max-width:1200px;margin:auto">
   <h2 data-i18n="gl_h"></h2><p class="sub" data-i18n="gl_s"></p>
@@ -139,7 +152,9 @@ footer{background:#061513;color:#b8c4bf;text-align:center;padding:36px 20px;font
 <script>
 /* ===== অনুবাদ (নতুন ভাষা যোগ করতে এখানে নতুন একটি ব্লক কপি করে অনুবাদ করুন) ===== */
 const T={
-bn:{nav_timeline:"টাইমলাইন",nav_volumes:"খণ্ডসমূহ",nav_map:"মানচিত্র",nav_glossary:"পরিভাষা",nav_refs:"সূত্রগ্রন্থ",
+bn:{nav_timeline:"টাইমলাইন",nav_volumes:"খণ্ডসমূহ",nav_map:"মানচিত্র",nav_glossary:"পরিভাষা",nav_refs:"সূত্রগ্রন্থ",nav_scholars:"স্কলার",
+sc_h:"স্কলার ও মনীষী",sc_s:"মুফাসসির, মুহাদ্দিস, ফকিহ, ইতিহাসবিদ, দার্শনিক ও বিজ্ঞানী — নাম লিখে খুঁজে নিন তাঁদের জীবনী ও অবদান।",sc_cta:"সকল স্কলার দেখুন →",
+img_credit:"ছবি: কর্ডোবা মসজিদের মেহরাব",
 hero_title:"মুসলিম উম্মাহর ইতিহাস",hero_sub:"সৃষ্টির সূচনা থেকে আধুনিক যুগ পর্যন্ত — মূল আরবি উৎসগ্রন্থের আলোকে গবেষণাধর্মী এক ডিজিটাল আর্কাইভ।",
 search_ph:"খুঁজুন: বদর, কর্ডোবা, সালাহুদ্দীন…",cta1:"টাইমলাইন দেখুন",cta2:"মানচিত্রে ঘুরে আসুন",
 st_vol:"খণ্ড",st_cat:"মূল ক্যাটাগরি",st_years:"বছরের ইতিহাস",st_src:"+ প্রধান সূত্রগ্রন্থ",
@@ -159,7 +174,9 @@ eras:[
 ["উসমানীয় খিলাফত","১৫শ–১৭শ খণ্ড","১২৯৯ – ১৯২৪ খ্রি.","কনস্টান্টিনোপল বিজয় থেকে খিলাফতের অবসান।",["উসমান গাজী","মুহাম্মদ আল-ফাতিহ","সুলাইমান","১৯২৪"]],
 ["ভারতীয় উপমহাদেশ","১৮শ–২০শ খণ্ড","৭১২ – ১৯৪৭ খ্রি.","দিল্লি সালতানাত, মুঘল সাম্রাজ্য ও ব্রিটিশ উপনিবেশ।",["মুহাম্মদ বিন কাসেম","বাবর","আকবর","আওরঙ্গজেব","পলাশী","১৮৫৭"]]],
 glos:[["জিযিয়া","অমুসলিম নাগরিকদের ওপর আরোপিত নিরাপত্তা-কর।"],["গাজওয়াহ","যে যুদ্ধে নবী (সা.) নিজে অংশ নিয়েছেন।"],["সারিয়াহ","নবী (সা.) যে অভিযানে সশরীরে ছিলেন না, কিন্তু প্রেরণ করেছেন।"],["আমীরুল মুমিনীন","মুসলিমদের শাসক বা খলিফার উপাধি।"],["খারেজি","আলী (রা.)-এর বিরুদ্ধে বেরিয়ে যাওয়া একটি দল।"],["মামলুক","মিশর-সিরিয়ায় ক্ষমতায় আসা সামরিক দাসবংশীয় শাসক।"]]},
-en:{nav_timeline:"Timeline",nav_volumes:"Volumes",nav_map:"Map",nav_glossary:"Glossary",nav_refs:"Sources",
+en:{nav_timeline:"Timeline",nav_volumes:"Volumes",nav_map:"Map",nav_glossary:"Glossary",nav_refs:"Sources",nav_scholars:"Scholars",
+sc_h:"Scholars & Luminaries",sc_s:"Exegetes, hadith masters, jurists, historians, philosophers and scientists — search by name to read their lives and contributions.",sc_cta:"Browse all scholars →",
+img_credit:"Image: Mihrab of the Great Mosque of Córdoba",
 hero_title:"The History of the Muslim Ummah",hero_sub:"From the beginning of creation to the modern era — a research-oriented digital archive grounded in classical Arabic sources.",
 search_ph:"Search: Badr, Córdoba, Saladin…",cta1:"Explore the Timeline",cta2:"Journey on the Map",
 st_vol:"Volumes",st_cat:"Main Categories",st_years:"Years of History",st_src:"+ Primary Sources",
@@ -198,8 +215,10 @@ function render(){
  $("#cards").innerHTML=t.eras.map((e,i)=>`<div class="card" data-s="${(e[0]+e[3]+e[4].join(' ')).toLowerCase()}" style="--c:${COL[i]}"><div class="top">${e[0]}</div><div class="bd"><small>${e[1]} · ${e[2]}</small><p style="margin-top:6px">${e[3]}</p></div></div>`).join("");
  $("#glos").innerHTML=t.glos.map(g=>`<div><b>${g[0]}</b><br>${g[1]}</div>`).join("");
  $("#reflist").innerHTML=SOURCES.map(s=>`<li>${s}</li>`).join("");
+ $("#schcats").innerHTML=SCH_CATS.map(c=>`<a style="--c:${c[2]}" href="scholars.html">${lang==="bn"?c[0]:c[1]}</a>`).join("");
  $("#lang").value=lang;
 }
+const SCH_CATS=[["সাহাবি ও তাবেঈ","Companions & Successors","#8a5a2b"],["চার মাজহাব","Four Schools","#0f5a4a"],["হাদিসশাস্ত্র","Hadith","#6b3fa0"],["তাফসির","Tafsir","#c0662b"],["আকিদা ও কালাম","Theology","#3a6d8a"],["দর্শন ও বিজ্ঞান","Philosophy & Science","#2b8a6a"],["ইতিহাসবিদ","Historians","#8a2b4f"],["তাসাউফ","Tasawwuf","#5f7a2b"],["উপমহাদেশ ও আধুনিক","Subcontinent & Modern","#2b5f8a"],["বাংলাদেশের আলেম","Scholars of Bangladesh","#1f7a4a"]];
 $("#lang").onchange=e=>{lang=e.target.value;localStorage.lang=lang;render()};
 $("#dark").onclick=()=>{const d=document.documentElement;const on=d.dataset.theme==="dark";d.dataset.theme=on?"":"dark";localStorage.theme=on?"":"dark"};
 if(localStorage.theme)document.documentElement.dataset.theme=localStorage.theme;
