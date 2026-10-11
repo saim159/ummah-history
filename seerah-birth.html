@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>মক্কা, বংশ ও জন্ম — Ummah Chronicles</title>
+<meta name="description" content="Mecca, lineage and birth of the Prophet ﷺ: a sourced bilingual article with map, timeline and footnotes.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+</head>
+<body data-lang="bn">
+<div id="prog"></div>
+<div id="app"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="article.js"></script>
+<script>
+/* =========================================================
+   এই আর্টিকেলের তথ্য। নতুন আর্টিকেল বানাতে এই ফাইল কপি করে শুধু এই অংশ বদলাবেন।
+   সাইটেশন চিহ্ন: {সূত্র-কোড|অধ্যায়/অংশ|পৃষ্ঠা}  (পৃষ্ঠা ফাঁকা থাকলে "যাচাই বাকি" দেখাবে)
+   সূত্র-কোডগুলো article.js-এর SRC তালিকায় আছে।
+   ========================================================= */
+const ARTICLE={
+ id:"seerah-birth",
+ arabic:"مولد النبي ﷺ ونسبه",
+ title:{bn:"মক্কা, বংশ ও জন্ম",en:"Mecca, Lineage and Birth"},
+ subtitle:{bn:"নবী মুহাম্মদ ﷺ-এর বংশপরিচয়, জন্ম ও শৈশব — আনু. ৫৭০ খ্রিষ্টাব্দ, মক্কা।",en:"The lineage, birth and childhood of the Prophet Muhammad ﷺ — Mecca, c. 570 CE."},
+ badges:[{bn:"সীরাত · মাক্কী জীবন",en:"Seerah · Meccan period"},{bn:"খণ্ড ২",en:"Vol. 2"},{bn:"খসড়া: পৃষ্ঠা-নম্বর যাচাই চলছে",en:"Draft: page numbers being verified"}],
+ info:[
+  {k:{bn:"নাম",en:"Name"},v:{bn:"মুহাম্মদ ইবনে আবদুল্লাহ ইবনে আবদুল মুত্তালিব, কুরাইশ বংশের বনু হাশিম শাখা{ish|নবী ﷺ-এর বংশ-তালিকা}",en:"Muhammad ibn Abdullah ibn Abd al-Muttalib, of the Banu Hashim clan of the Quraysh{ish|Genealogy of the Prophet ﷺ}"}},
+  {k:{bn:"জন্ম",en:"Birth"},v:{bn:"মক্কা, হাতির বছরে (আনু. ৫৭০ খ্রি.); প্রচলিত মত — সোমবার, ১২ রবিউল আউয়াল{ish|নবী ﷺ-এর জন্ম}",en:"Mecca, in the Year of the Elephant (c. 570 CE); common view — Monday, 12 Rabi' al-Awwal{ish|Birth of the Prophet ﷺ}"}},
+  {k:{bn:"পিতা",en:"Father"},v:{bn:"আবদুল্লাহ ইবনে আবদুল মুত্তালিব",en:"Abdullah ibn Abd al-Muttalib"}},
+  {k:{bn:"মাতা",en:"Mother"},v:{bn:"আমিনা বিনতে ওয়াহব (বনু যুহরা)",en:"Amina bint Wahb (Banu Zuhra)"}},
+  {k:{bn:"দুধমাতা",en:"Wet nurse"},v:{bn:"হালিমা আস-সা'দিয়্যা (বনু সা'দ){ish|দুধপান ও বনু সা'দে শৈশব}",en:"Halima al-Sa'diyya (Banu Sa'd){ish|Fostering among the Banu Sa'd}"}},
+  {k:{bn:"অভিভাবক",en:"Guardians"},v:{bn:"দাদা আবদুল মুত্তালিব, এরপর চাচা আবু তালিব",en:"Grandfather Abd al-Muttalib, then uncle Abu Talib"}},
+  {k:{bn:"কুরআনে",en:"In the Qur'an"},v:{bn:"সূরা ফীল (১০৫), সূরা কুরাইশ (১০৬), সূরা দুহা ৯৩:৬–৮",en:"Sura al-Fil (105), Sura Quraysh (106), Sura al-Duha 93:6–8"}}
+ ],
+ stats:[
+  {n:"~570",l:{bn:"আনু. জন্মসাল (খ্রি.)",en:"Approx. birth year (CE)"}},
+  {n:"~6",l:{bn:"মায়ের মৃত্যুর সময় বয়স",en:"Age at mother's death"}},
+  {n:"~8",l:{bn:"দাদার মৃত্যুর সময় বয়স",en:"Age at grandfather's death"}},
+  {n:"~12",l:{bn:"সিরিয়া-সফরের সময় বয়স",en:"Age on the Syria journey"}}
+ ],
+ timeline:[
+  {when:{bn:"আনু. ৫৭০ খ্রি.",en:"c. 570 CE"},what:{bn:"হাতির বছর — আবরাহার মক্কা-অভিযান; একই সময়ে নবী ﷺ-এর জন্ম।{quran|১০৫:১–৫}{ish|আবরাহা ও হাতির ঘটনা}",en:"Year of the Elephant — Abraha's expedition against Mecca; the Prophet ﷺ is born around this time.{quran|105:1–5}{ish|Abraha and the elephant}"}},
+  {when:{bn:"জন্মের আগে/অল্প পরে",en:"Before or shortly after birth"},what:{bn:"পিতা আবদুল্লাহর ইন্তেকাল (সূত্রভেদ আছে)।{ish|আবদুল্লাহর মৃত্যু}{sad|নবী ﷺ-এর পিতা-মাতা}",en:"Death of his father Abdullah (sources differ on exact timing).{ish|Death of Abdullah}{sad|The Prophet's parents}"}},
+  {when:{bn:"শৈশবের প্রথম বছরগুলো",en:"Early years"},what:{bn:"বনু সা'দ গোত্রে হালিমার কাছে লালন-পালন।{ish|দুধপান ও বনু সা'দে শৈশব}",en:"Raised among the Banu Sa'd in the care of Halima.{ish|Fostering among the Banu Sa'd}"}},
+  {when:{bn:"আনু. ৬ বছর বয়স",en:"c. age 6"},what:{bn:"মা আমিনার ইন্তেকাল — মদিনা থেকে ফেরার পথে আল-আবওয়ায়।{ish|আমিনার মৃত্যু}{sad|নবী ﷺ-এর পিতা-মাতা}",en:"Death of his mother Amina at al-Abwa', on the way back from Medina.{ish|Death of Amina}{sad|The Prophet's parents}"}},
+  {when:{bn:"আনু. ৮ বছর বয়স",en:"c. age 8"},what:{bn:"দাদা আবদুল মুত্তালিবের ইন্তেকাল; চাচা আবু তালিবের অভিভাবকত্ব।{ish|আবদুল মুত্তালিবের মৃত্যু}",en:"Death of his grandfather Abd al-Muttalib; guardianship of his uncle Abu Talib.{ish|Death of Abd al-Muttalib}"}},
+  {when:{bn:"আনু. ১২ বছর বয়স",en:"c. age 12"},what:{bn:"আবু তালিবের সঙ্গে সিরিয়ার বুসরা-অভিমুখে বাণিজ্যসফর।{ish|আবু তালিবের সঙ্গে সিরিয়া-সফর}",en:"Trading journey toward Busra in Syria with Abu Talib.{ish|The journey to Syria with Abu Talib}"}}
+ ],
+ map:{
+  center:[23.5,38.2],zoom:5,
+  caption:{bn:"মানচিত্র: মক্কা, মদিনা (তৎকালীন ইয়াসরিব), আল-আবওয়া ও বুসরা। রেখাগুলো সরলীকৃত চিত্র মাত্র, প্রকৃত পথ নয়; আল-আবওয়া ও বুসরার স্থানাঙ্ক আনুমানিক।",en:"Map: Mecca, Medina (then Yathrib), al-Abwa' and Busra. Lines are schematic, not actual routes; coordinates of al-Abwa' and Busra are approximate."},
+  points:[
+   {lat:21.4225,lng:39.8262,n:{bn:"মক্কা",en:"Mecca"},d:{bn:"জন্মস্থান; কুরাইশের কেন্দ্র ও কাবার শহর।",en:"Birthplace; the Quraysh centre and city of the Kaaba."}},
+   {lat:24.4672,lng:39.6111,n:{bn:"মদিনা (ইয়াসরিব)",en:"Medina (Yathrib)"},d:{bn:"পিতার সমাধি ও মাতার সফরের গন্তব্য (বর্ণনা অনুযায়ী)।",en:"Where, by the reports, his father was buried and his mother's journey led."}},
+   {lat:23.17,lng:39.0,n:{bn:"আল-আবওয়া (আনুমানিক)",en:"al-Abwa' (approx.)"},d:{bn:"মা আমিনার ইন্তেকালের স্থান।",en:"Place of his mother Amina's death."}},
+   {lat:32.52,lng:36.48,n:{bn:"বুসরা (আনুমানিক)",en:"Busra (approx.)"},d:{bn:"সিরিয়ার বাণিজ্যকেন্দ্র।",en:"Trading town in Syria."}}
+  ],
+  lines:[
+   {pts:[[21.4225,39.8262],[23.17,39.0],[24.4672,39.6111]],c:"#0f5a4a",n:{bn:"মক্কা–মদিনা সফর (সরলীকৃত)",en:"Mecca–Medina journey (schematic)"}},
+   {pts:[[21.4225,39.8262],[32.52,36.48]],c:"#b8892b",n:{bn:"সিরিয়া-সফর (সরলীকৃত)",en:"Syria journey (schematic)"}}
+  ]
+ },
+ further:["lings","mub","ei2","brit"],
+ sections:[
+  {id:"overview",h:{bn:"সারসংক্ষেপ",en:"Overview"},blocks:[
+   {t:"note",bn:"প্রতিটি ফুটনোটে সূত্রগ্রন্থের নাম ও অংশ দেওয়া আছে; সংস্করণভিত্তিক পৃষ্ঠা-নম্বর মিলিয়ে যুক্ত করা হচ্ছে, তাই এখন 'পৃষ্ঠা: যাচাই বাকি' দেখাবে।",en:"Each footnote names the source and section; edition-specific page numbers are being checked, so they currently read 'page: pending verification'."},
+   {t:"p",bn:"নবী মুহাম্মদ ﷺ মক্কায় কুরাইশ বংশের বনু হাশিম শাখায় জন্মগ্রহণ করেন। প্রাচীন সীরাত-সূত্রগুলো তাঁর বংশধারা আদনান পর্যন্ত এবং ঐতিহ্য অনুযায়ী ইসমাইল (আ.) পর্যন্ত বর্ণনা করে।{ish|নবী ﷺ-এর বংশ-তালিকা}{sad|নবী ﷺ-এর বংশ-তালিকা}",en:"The Prophet Muhammad ﷺ was born in Mecca into the Banu Hashim clan of the Quraysh. The early Sira sources trace his descent to Adnan and, in tradition, to Ismail (a.s.).{ish|Genealogy of the Prophet ﷺ}{sad|Genealogy of the Prophet ﷺ}"},
+   {t:"p",bn:"জন্মসাল সাধারণত আনুমানিক ৫৭০ খ্রিষ্টাব্দ ধরা হয় — যে বছর আবরাহার হাতিবাহিনীর অভিযান ঘটেছিল বলে ঐতিহ্যে আছে (কুরআনে সূরা ফীল)। নির্দিষ্ট দিন-তারিখ নিয়ে সূত্রভেদ আছে (নিচে দেখুন)।{quran|১০৫:১–৫}{ish|নবী ﷺ-এর জন্ম}{watt|Muhammad at Mecca, প্রারম্ভিক অংশ}",en:"The birth year is usually put at about 570 CE — the year of Abraha's elephant expedition in the tradition (Sura al-Fil in the Qur'an). The exact day and date are disputed (see below).{quran|105:1–5}{ish|Birth of the Prophet ﷺ}{watt|Muhammad at Mecca, opening chapters}"},
+   {t:"info"},
+   {t:"stats"},
+   {t:"p",bn:"বাংলা পাঠের জন্য দেখুন: মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ২।{rehan|খণ্ড ২, নবী ﷺ-এর বংশ ও জন্ম অংশ}",en:"For Bengali readers: Maulana Ismail Rehan, Muslim Ummah's History, vol. 2.{rehan|vol. 2, lineage and birth section}"}
+  ]},
+
+  {id:"mecca",h:{bn:"জন্মের সময়ের মক্কা",en:"Mecca at the Time"},blocks:[
+   {t:"p",bn:"মক্কা ছিল হিজাযের একটি গুরুত্বপূর্ণ উপত্যকা-শহর, কাবা ও হজ্জ-তীর্থের কারণে আরবে সম্মানিত এবং কুরাইশদের বাণিজ্য-কেন্দ্র। কুরাইশের শীত ও গ্রীষ্মকালীন বাণিজ্য-সফরের কথা কুরআনে এসেছে (সূরা কুরাইশ)।{quran|১০৬:১–৪}{watt|Muhammad at Mecca, মক্কার বাণিজ্য}",en:"Mecca was an important valley town in the Hijaz, revered in Arabia for the Kaaba and pilgrimage, and the trading centre of the Quraysh. The Qur'an mentions the Quraysh's winter and summer trading journeys (Sura Quraysh).{quran|106:1–4}{watt|Muhammad at Mecca, Meccan trade}"},
+   {t:"p",bn:"কুরাইশের প্রভাবশালী গোত্র-শাখাগুলোর একটি ছিল বনু হাশিম; কাবার হাজিদের পানি পান করানোর দায়িত্ব (সিকায়া) ছিল আবদুল মুত্তালিবের হাতে।{ish|আবদুল মুত্তালিব ও যমযম}",en:"The Banu Hashim were among the notable branches of the Quraysh; Abd al-Muttalib held the duty of providing water to pilgrims at the Kaaba (siqaya).{ish|Abd al-Muttalib and Zamzam}"},
+   {t:"p",bn:"হাতির বছরের ঘটনা — ইয়েমেনের শাসক আবরাহার কাবা ধ্বংসের উদ্দেশ্যে অভিযান — কুরআনে সংক্ষেপে বর্ণিত। বিস্তারিত বিবরণ সীরাত-সূত্রে পাওয়া যায়।{quran|১০৫:১–৫}{ish|আবরাহা ও হাতির ঘটনা}",en:"The events of the Year of the Elephant — the expedition of Abraha, ruler of Yemen, intending to destroy the Kaaba — are briefly described in the Qur'an; fuller narratives are in the Sira sources.{quran|105:1–5}{ish|Abraha and the elephant}"},
+   {t:"map"}
+  ]},
+
+  {id:"family",h:{bn:"পরিবার ও জন্ম",en:"Family and Birth"},blocks:[
+   {t:"p",bn:"পিতা আবদুল্লাহ ও মাতা আমিনা বিনতে ওয়াহব। বর্ণনা অনুযায়ী আবদুল্লাহ বাণিজ্য-সফরে বা মদিনা-অভিমুখে গিয়ে নবী ﷺ-এর জন্মের আগেই ইন্তেকাল করেন; কোনো কোনো বর্ণনায় জন্মের অল্প পরে।{ish|আবদুল্লাহর মৃত্যু}{sad|নবী ﷺ-এর পিতা-মাতা}",en:"His father was Abdullah and his mother Amina bint Wahb. According to the reports Abdullah died before the Prophet's ﷺ birth while on a journey connected with trade or Medina; some reports place it shortly after.{ish|Death of Abdullah}{sad|The Prophet's parents}"},
+   {t:"p",bn:"জন্মের পর দাদা আবদুল মুত্তালিব শিশুটির নাম রাখেন 'মুহাম্মদ' (প্রশংসিত)।{ish|নামকরণ}",en:"After the birth his grandfather Abd al-Muttalib named the child 'Muhammad' (the praised one).{ish|The naming}"},
+   {t:"var",h:{bn:"জন্মতারিখ:",en:"Date of birth:"},bn:"সোমবার ও রবিউল আউয়াল মাস বহুল প্রচলিত; তারিখ নিয়ে ২, ৮, ৯, ১০, ১২ — বিভিন্ন মত আছে। ১২ রবিউল আউয়াল সবচেয়ে পরিচিত মত।",en:"Monday and the month of Rabi' al-Awwal are widely reported; for the day of the month there are views of the 2nd, 8th, 9th, 10th and 12th, the 12th being the best known."}
+  ]},
+
+  {id:"childhood",h:{bn:"শৈশব",en:"Childhood"},blocks:[
+   {t:"p",bn:"আরবের রীতি অনুযায়ী শিশুকে দুধপান ও লালনের জন্য মরু-গোত্রে পাঠানো হতো। নবী ﷺ বনু সা'দ গোত্রের হালিমার কাছে কয়েক বছর কাটান।{ish|দুধপান ও বনু সা'দে শৈশব}",en:"By Arab custom infants were sent to desert tribes to be nursed and raised. The Prophet ﷺ spent some years with Halima of the Banu Sa'd.{ish|Fostering among the Banu Sa'd}"},
+   {t:"p",bn:"আনুমানিক ছয় বছর বয়সে মা আমিনা তাঁকে নিয়ে মদিনা সফর করেন; ফেরার পথে আল-আবওয়ায় আমিনা ইন্তেকাল করেন।{ish|আমিনার মৃত্যু}{sad|নবী ﷺ-এর পিতা-মাতা}",en:"At about the age of six his mother Amina took him on a journey to Medina; on the way back she died at al-Abwa'.{ish|Death of Amina}{sad|The Prophet's parents}"},
+   {t:"p",bn:"এরপর দাদা আবদুল মুত্তালিব তাঁর অভিভাবক হন; তিনিও আনুমানিক দুই বছর পর ইন্তেকাল করলে চাচা আবু তালিব দায়িত্ব নেন। কুরআনে এই এতিম-অবস্থা ও আল্লাহর আশ্রয়ের স্মরণ আছে।{ish|আবদুল মুত্তালিবের মৃত্যু}{quran|৯৩:৬–৮}",en:"His grandfather Abd al-Muttalib then became his guardian; when he too died about two years later, his uncle Abu Talib took charge. The Qur'an recalls this state of orphanhood and God's shelter.{ish|Death of Abd al-Muttalib}{quran|93:6–8}"},
+   {t:"p",bn:"আনুমানিক ১২ বছর বয়সে আবু তালিবের সঙ্গে সিরিয়া-অভিমুখে বাণিজ্য-কাফেলায় যান। এই সফরের সঙ্গে জড়িত বুহাইরা-পাদ্রির কাহিনি সীরাত-সূত্রে আছে; ঐতিহাসিকেরা এর বিস্তারিত অংশ নিয়ে আলোচনা করেছেন।{ish|আবু তালিবের সঙ্গে সিরিয়া-সফর}",en:"At about twelve he travelled with Abu Talib in a trade caravan toward Syria. The story of the monk Bahira linked to this journey is in the Sira sources; historians have discussed its details.{ish|The journey to Syria with Abu Talib}"},
+   {t:"fig",bn:"এখানে মক্কা বা কাবা-অঞ্চলের একটি যাচাই-করা Wikimedia Commons ছবি (লাইসেন্স ও ক্রেডিটসহ) বসবে। নবী ﷺ বা সাহাবিদের কোনো চিত্র ব্যবহার করা হবে না।",en:"A verified Wikimedia Commons photograph of Mecca or the Kaaba area (with licence and credit) will go here. No depiction of the Prophet ﷺ or the Companions is used."}
+  ]},
+
+  {id:"timeline",h:{bn:"ঘটনাপঞ্জি",en:"Timeline"},blocks:[{t:"tl"}]},
+
+  {id:"people",h:{bn:"প্রধান ব্যক্তিগণ",en:"Key Figures"},blocks:[
+   {t:"people",rows:[
+    {c:"#0f5a4a",n:{bn:"আবদুল্লাহ ইবনে আবদুল মুত্তালিব",en:"Abdullah ibn Abd al-Muttalib"},r:{bn:"নবী ﷺ-এর পিতা",en:"Father of the Prophet ﷺ"}},
+    {c:"#0f5a4a",n:{bn:"আমিনা বিনতে ওয়াহব",en:"Amina bint Wahb"},r:{bn:"নবী ﷺ-এর মাতা",en:"Mother of the Prophet ﷺ"}},
+    {c:"#0f5a4a",n:{bn:"আবদুল মুত্তালিব",en:"Abd al-Muttalib"},r:{bn:"দাদা; বনু হাশিমের নেতা",en:"Grandfather; leader of the Banu Hashim"}},
+    {c:"#0f5a4a",n:{bn:"আবু তালিব",en:"Abu Talib"},r:{bn:"চাচা ও অভিভাবক",en:"Uncle and guardian"}},
+    {c:"#b8892b",n:{bn:"হালিমা আস-সা'দিয়্যা",en:"Halima al-Sa'diyya"},r:{bn:"দুধমাতা",en:"Wet nurse"}},
+    {c:"#8a2b3a",n:{bn:"আবরাহা",en:"Abraha"},r:{bn:"ইয়েমেনের শাসক; হাতির বছরের অভিযান",en:"Ruler of Yemen; the expedition of the Elephant year"}}
+   ]}
+  ]},
+
+  {id:"significance",h:{bn:"তাৎপর্য",en:"Significance"},blocks:[
+   {t:"p",bn:"এই বছরগুলো পরবর্তী নবুয়তি জীবনের প্রেক্ষাপট: কুরাইশ সমাজ, বনু হাশিমের মর্যাদা এবং আবু তালিবের আশ্রয় — যা মাক্কী পর্বের বহু ঘটনা বুঝতে সাহায্য করে।{watt|Muhammad at Mecca, মক্কী সমাজ}{ei2|'Muhammad' এন্ট্রি}",en:"These years form the backdrop to the later prophetic life: Quraysh society, the standing of the Banu Hashim and the protection of Abu Talib, which help explain many events of the Meccan period.{watt|Muhammad at Mecca, Meccan society}{ei2|Entry 'Muhammad'}"},
+   {t:"p",bn:"পরবর্তী আর্টিকেল: যৌবন, খাদিজা (রা.)-এর সঙ্গে বিবাহ ও কাবার পুনর্নির্মাণ।",en:"Next article: youth, marriage to Khadija (r.a.) and the rebuilding of the Kaaba."}
+  ]},
+
+  {id:"variants",h:{bn:"সূত্রভেদ ও মতপার্থক্য",en:"Variant Reports and Debates"},blocks:[
+   {t:"var",h:{bn:"জন্মসাল:",en:"Birth year:"},bn:"আনু. ৫৭০ বা ৫৭১ খ্রিষ্টাব্দ; আধুনিক গবেষকেরা সঠিক সাল নিয়ে সতর্ক এবং আরবীয় বর্ষপঞ্জির সীমাবদ্ধতার কথা উল্লেখ করেন।",en:"c. 570 or 571 CE; modern scholars are cautious about the exact year, noting the limits of the pre-Islamic Arabian calendar."},
+   {t:"var",h:{bn:"পিতার মৃত্যুর সময়:",en:"Timing of the father's death:"},bn:"জন্মের আগে (বহুল প্রচলিত) বা অল্প পরে — সূত্রভেদে ভিন্ন।",en:"Before the birth (widely reported) or shortly after — sources differ."},
+   {t:"var",h:{bn:"বুহাইরার কাহিনি:",en:"The Bahira story:"},bn:"সীরাত-সূত্রে বর্ণিত; এর বর্ণনাধারা ও বিস্তারিত অংশ নিয়ে মুহাদ্দিস ও ঐতিহাসিকদের মধ্যে আলোচনা আছে।",en:"Reported in the Sira sources; its chains of transmission and details have been discussed by hadith scholars and historians."},
+   {t:"var",h:{bn:"সূত্রের প্রকৃতি:",en:"Nature of the sources:"},bn:"শৈশবের তথ্য মূলত ইবনে ইসহাক-ইবনে হিশাম ও ইবনে সা'দের ওপর নির্ভরশীল; সমসাময়িক লিখিত সূত্র নেই, তাই আধুনিক গবেষকেরা এই অংশে সতর্কতার সঙ্গে সিদ্ধান্ত টানেন।",en:"Information on childhood rests mainly on Ibn Ishaq–Ibn Hisham and Ibn Sa'd; there are no contemporary written sources, so modern scholars draw conclusions here with caution."},
+   {t:"note",bn:"তারিখ ও সংখ্যাগুলো সাধারণ সারসংক্ষেপ-ভিত্তিক; নির্দিষ্ট সংস্করণের সাথে মিলিয়ে চূড়ান্ত করা হবে। আল-আবওয়া ও বুসরার স্থানাঙ্ক আনুমানিক।",en:"Dates and figures follow general summaries and will be finalised against specific editions. Coordinates of al-Abwa' and Busra are approximate."}
+  ]}
+ ]
+};
+render();
+</script>
+</body>
+</html>
