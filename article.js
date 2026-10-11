@@ -28,15 +28,15 @@ const SRC={
  ish:{type:"primary",short:{bn:"ইবনে হিশাম, আস-সীরাতুন নববিয়্যাহ",en:"Ibn Hisham, al-Sira al-Nabawiyya"},full:{bn:"ইবনে হিশাম (মৃ. আনু. ২১৮ হি./৮৩৩ খ্রি.), আস-সীরাতুন নববিয়্যাহ — ইবনে ইসহাকের সীরাতের সম্পাদিত রূপ। (সংস্করণ ও পৃষ্ঠা যাচাই বাকি)",en:"Ibn Hisham (d. c. 218/833), al-Sira al-Nabawiyya — the edited recension of Ibn Ishaq's Sira. (Edition and pages to be verified.)"}},
  waq:{type:"primary",short:{bn:"আল-ওয়াকিদি, কিতাবুল মাগাযি",en:"al-Waqidi, Kitab al-Maghazi"},full:{bn:"আল-ওয়াকিদি (মৃ. ২০৭ হি./৮২৩ খ্রি.), কিতাবুল মাগাযি — যুদ্ধাভিযানের সবচেয়ে বিস্তারিত প্রাচীন বিবরণগুলোর একটি। হাদিস বর্ণনায় তিনি মুহাদ্দিসদের কাছে দুর্বল বিবেচিত, তবে সামরিক বিবরণের জন্য ঐতিহাসিকেরা তাঁকে দেখেন।",en:"al-Waqidi (d. 207/823), Kitab al-Maghazi — one of the most detailed early accounts of the campaigns. Hadith critics regarded him as weak in hadith transmission, but historians consult him for military detail."}},
  sad:{type:"primary",short:{bn:"ইবনে সা'দ, আত-তাবাকাতুল কুবরা",en:"Ibn Sa'd, al-Tabaqat al-Kubra"},full:{bn:"ইবনে সা'দ (মৃ. ২৩০ হি./৮৪৫ খ্রি.), আত-তাবাকাতুল কুবরা — সাহাবিদের জীবনী ও বদরি সাহাবিদের তালিকা।",en:"Ibn Sa'd (d. 230/845), al-Tabaqat al-Kubra — biographical dictionary including the lists of Badr participants."}},
- tab:{type:"primary",short:{bn:"আত-তাবারি, তারিখুর রুসুল ওয়াল মুলুক",en:"al-Tabari, Tarikh al-Rusul wa'l-Muluk"},full:{bn:"আত-তাবারি (মৃ. ৩১০ হি./৯২৩ খ্রি.), তারিখুর রুসুল ওয়াল মুলুক — ২য় হিজরির ঘটনাবলি।",en:"al-Tabari (d. 310/923), Tarikh al-Rusul wa'l-Muluk — events of the year 2 AH."}},
- ik:{type:"primary",short:{bn:"ইবনে কাসির, আল-বিদায়া ওয়ান নিহায়া",en:"Ibn Kathir, al-Bidaya wa'l-Nihaya"},full:{bn:"ইবনে কাসির (মৃ. ৭৭৪ হি./১৩৭৩ খ্রি.), আল-বিদায়া ওয়ান নিহায়া — ২য় হিজরির ঘটনাবলি, বদর অধ্যায়। (পরবর্তী যুগের সংকলন)",en:"Ibn Kathir (d. 774/1373), al-Bidaya wa'l-Nihaya — events of 2 AH, the Badr chapter. (A later compilation.)"}},
- bukh:{type:"primary",short:{bn:"সহিহ আল-বুখারি",en:"Sahih al-Bukhari"},full:{bn:"ইমাম বুখারি (মৃ. ২৫৬ হি./৮৭০ খ্রি.), আল-জামি আস-সহিহ — কিতাবুল মাগাযি, বদর অধ্যায়। (হাদিস নম্বর যাচাই বাকি)",en:"al-Bukhari (d. 256/870), al-Jami' al-Sahih — Book of Maghazi, Badr chapters. (Hadith numbers to be verified.)"}},
- brit:{type:"reference",short:{bn:"ব্রিটানিকা, 'Battle of Badr'",en:"Encyclopaedia Britannica, 'Battle of Badr'"},full:{bn:"Encyclopaedia Britannica, 'Battle of Badr' (অনলাইন এন্ট্রি)। britannica.com/event/Battle-of-Badr",en:"Encyclopaedia Britannica, 'Battle of Badr' (online entry). britannica.com/event/Battle-of-Badr"}},
- ei2:{type:"reference",short:{bn:"Encyclopaedia of Islam (২য় সং.), 'Badr'",en:"Encyclopaedia of Islam, 2nd ed., s.v. 'Badr'"},full:{bn:"Encyclopaedia of Islam, দ্বিতীয় সংস্করণ, 'Badr' এন্ট্রি। (খণ্ড ও পৃষ্ঠা যাচাই বাকি)",en:"Encyclopaedia of Islam, 2nd edition, entry 'Badr'. (Volume and pages to be verified.)"}},
- watt:{type:"secondary",short:{bn:"W. M. Watt, Muhammad at Medina",en:"W. M. Watt, Muhammad at Medina"},full:{bn:"W. Montgomery Watt, Muhammad at Medina (Oxford: Clarendon Press, 1956)।",en:"W. Montgomery Watt, Muhammad at Medina (Oxford: Clarendon Press, 1956)."}},
+ tab:{type:"primary",short:{bn:"আত-তাবারি, তারিখুর রুসুল ওয়াল মুলুক",en:"al-Tabari, Tarikh al-Rusul wa'l-Muluk"},full:{bn:"আত-তাবারি (মৃ. ৩১০ হি./৯২৩ খ্রি.), তারিখুর রুসুল ওয়াল মুলুক — বর্ষ-অনুক্রমিক ইতিহাস। (সংস্করণ ও পৃষ্ঠা যাচাই বাকি)",en:"al-Tabari (d. 310/923), Tarikh al-Rusul wa'l-Muluk — annalistic history. (Edition and pages to be verified.)"}},
+ ik:{type:"primary",short:{bn:"ইবনে কাসির, আল-বিদায়া ওয়ান নিহায়া",en:"Ibn Kathir, al-Bidaya wa'l-Nihaya"},full:{bn:"ইবনে কাসির (মৃ. ৭৭৪ হি./১৩৭৩ খ্রি.), আল-বিদায়া ওয়ান নিহায়া — বর্ষ-অনুক্রমিক ইতিহাস। (পরবর্তী যুগের সংকলন)",en:"Ibn Kathir (d. 774/1373), al-Bidaya wa'l-Nihaya — annalistic history. (A later compilation.)"}},
+ bukh:{type:"primary",short:{bn:"সহিহ আল-বুখারি",en:"Sahih al-Bukhari"},full:{bn:"ইমাম বুখারি (মৃ. ২৫৬ হি./৮৭০ খ্রি.), আল-জামি আস-সহিহ। (হাদিস নম্বর যাচাই বাকি)",en:"al-Bukhari (d. 256/870), al-Jami' al-Sahih. (Hadith numbers to be verified.)"}},
+ brit:{type:"reference",short:{bn:"ব্রিটানিকা",en:"Encyclopaedia Britannica"},full:{bn:"Encyclopaedia Britannica (অনলাইন এন্ট্রি; ফুটনোটে এন্ট্রির নাম দেওয়া আছে)। britannica.com",en:"Encyclopaedia Britannica (online entries; the footnote names the entry). britannica.com"}},
+ ei2:{type:"reference",short:{bn:"Encyclopaedia of Islam (২য় সং.)",en:"Encyclopaedia of Islam, 2nd ed."},full:{bn:"Encyclopaedia of Islam, দ্বিতীয় সংস্করণ (ফুটনোটে এন্ট্রির নাম দেওয়া আছে)। (খণ্ড ও পৃষ্ঠা যাচাই বাকি)",en:"Encyclopaedia of Islam, 2nd edition (the footnote names the entry). (Volume and pages to be verified.)"}},
+ watt:{type:"secondary",short:{bn:"W. M. Watt, Muhammad at Mecca / Muhammad at Medina",en:"W. M. Watt, Muhammad at Mecca / Muhammad at Medina"},full:{bn:"W. Montgomery Watt, Muhammad at Mecca (Oxford: Clarendon Press, 1953) এবং Muhammad at Medina (Oxford: Clarendon Press, 1956)। ফুটনোটে কোন খণ্ড তা উল্লেখ আছে।",en:"W. Montgomery Watt, Muhammad at Mecca (Oxford: Clarendon Press, 1953) and Muhammad at Medina (Oxford: Clarendon Press, 1956). The footnote names the volume."}},
  lings:{type:"secondary",short:{bn:"Martin Lings, Muhammad",en:"Martin Lings, Muhammad"},full:{bn:"Martin Lings, Muhammad: His Life Based on the Earliest Sources (London, 1983)।",en:"Martin Lings, Muhammad: His Life Based on the Earliest Sources (London, 1983)."}},
  mub:{type:"secondary",short:{bn:"আল-মুবারকপুরি, আর-রাহিকুল মাখতুম",en:"al-Mubarakpuri, al-Raheeq al-Makhtum"},full:{bn:"সফিউর রহমান আল-মুবারকপুরি, আর-রাহিকুল মাখতুম (সীরাত গ্রন্থ)। (সংস্করণ ও পৃষ্ঠা যাচাই বাকি)",en:"Safi al-Rahman al-Mubarakpuri, al-Raheeq al-Makhtum (biography of the Prophet). (Edition and pages to be verified.)"}},
- rehan:{type:"secondary",short:{bn:"ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস",en:"Ismail Rehan, Muslim Ummah's History (Bengali)"},full:{bn:"মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ৩ (সীরাতুন্নবী — মাদানী জীবন)। (সংস্করণ ও পৃষ্ঠা যাচাই বাকি)",en:"Maulana Ismail Rehan, Muslim Ummah's History, vol. 3 (Seerah — Medinan period), in Bengali. (Edition and pages to be verified.)"}}
+ rehan:{type:"secondary",short:{bn:"ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস",en:"Ismail Rehan, Muslim Ummah's History (Bengali)"},full:{bn:"মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ২–৩ (সীরাতুন্নবী)। (সংস্করণ ও পৃষ্ঠা যাচাই বাকি)",en:"Maulana Ismail Rehan, Muslim Ummah's History, vols. 2–3 (Seerah), in Bengali. (Edition and pages to be verified.)"}}
 };
 
 /* ===== সাইটেশন চিহ্ন: {সূত্র|অধ্যায়|পৃষ্ঠা} ===== */
@@ -80,7 +80,7 @@ function render(){
  A.sections.forEach(s=>{body+=`<h2 id="${s.id}">${L(s.h)}</h2>`+s.blocks.map(b=>block(b,A)).join("")});
  /* ফুটনোট */
  const fnHtml=FN.map((f,i)=>{used.add(f.k);const n=i+1;
-  return `<li id="fn${n}">${n}. ${SRC[f.k].short[lang]}${f.loc?" — "+f.loc:""}<span class="pg">${f.pg?("p. "+f.pg):t.pgPending}</span><a class="bk" href="#r${n}">↩</a></li>`}).join("");
+  return `<li id="fn${n}">${n}. ${SRC[f.k].short[lang]}${f.loc?" — "+f.loc:""}<span class="pg">${f.pg?((lang==="bn"?"পৃ. ":"p. ")+f.pg):t.pgPending}</span><a class="bk" href="#r${n}">↩</a></li>`}).join("");
  (A.further||[]).forEach(k=>used.add(k));
  const order=["quran","primary","secondary","reference","site"];
  const bib=[...used].filter(k=>SRC[k]).sort((a,b)=>order.indexOf(SRC[a].type)-order.indexOf(SRC[b].type))
@@ -108,12 +108,13 @@ function render(){
 let mapObj=null;
 function initMap(){
  const el=$("#map");if(!el)return;
- if(!window.L){el.innerHTML='<div style="padding:30px;color:var(--mute)">Map could not load (Leaflet).</div>';return}
+ const LF=window.L;
+ if(!LF||!LF.map){el.innerHTML='<div style="padding:30px;color:var(--mute)">Map could not load (Leaflet).</div>';return}
  const M=ARTICLE.map;
- mapObj=L.map("map",{scrollWheelZoom:false}).setView(M.center,M.zoom);
- L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(mapObj);
- M.points.forEach(p=>L.marker([p.lat,p.lng]).addTo(mapObj).bindPopup(`<b>${L(p.n)}</b><br>${L(p.d)}`));
- M.lines.forEach(l=>L.polyline(l.pts,{color:l.c,weight:3,dashArray:"8 8"}).addTo(mapObj).bindPopup(L(l.n)));
+ mapObj=LF.map("map",{scrollWheelZoom:false}).setView(M.center,M.zoom);
+ LF.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(mapObj);
+ M.points.forEach(p=>LF.marker([p.lat,p.lng]).addTo(mapObj).bindPopup(`<b>${L(p.n)}</b><br>${L(p.d)}`));
+ M.lines.forEach(l=>LF.polyline(l.pts,{color:l.c,weight:3,dashArray:"8 8"}).addTo(mapObj).bindPopup(L(l.n)));
 }
 
 /* ===== সাইটেশন (উদ্ধৃতি) তৈরি ===== */
