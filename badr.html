@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>বদরের যুদ্ধ — Ummah Chronicles</title>
+<meta name="description" content="The Battle of Badr (17 Ramadan 2 AH / March 624 CE): a sourced, bilingual article with map, timeline and footnotes.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+</head>
+<body data-lang="bn">
+<div id="prog"></div>
+<div id="app"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="article.js"></script>
+<script>
+/* =========================================================
+   এই আর্টিকেলের তথ্য। নতুন আর্টিকেল বানাতে এই ফাইল কপি করে শুধু এই অংশ বদলাবেন।
+   সাইটেশন চিহ্ন: {সূত্র-কোড|অধ্যায়/অংশ|পৃষ্ঠা}  (পৃষ্ঠা ফাঁকা থাকলে "যাচাই বাকি" দেখাবে)
+   সূত্র-কোডগুলো article.js-এর SRC তালিকায় আছে।
+   ========================================================= */
+const ARTICLE={
+ id:"badr",
+ arabic:"غزوة بدر الكبرى",
+ title:{bn:"বদরের যুদ্ধ",en:"The Battle of Badr"},
+ subtitle:{bn:"মদিনার মুসলিম সম্প্রদায় ও মক্কার কুরাইশদের মধ্যে প্রথম বড় সামরিক সংঘর্ষ — ২য় হিজরি / ৬২৪ খ্রিষ্টাব্দ।",en:"The first major military clash between the Muslim community of Medina and the Quraysh of Mecca — 2 AH / 624 CE."},
+ badges:[{bn:"সীরাত · ২য় হিজরি",en:"Seerah · 2 AH"},{bn:"খণ্ড ৩ (মাদানী জীবন)",en:"Vol. 3 (Medinan period)"},{bn:"খসড়া: পৃষ্ঠা-নম্বর যাচাই চলছে",en:"Draft: page numbers being verified"}],
+
+ info:[
+  {k:{bn:"তারিখ",en:"Date"},v:{bn:"২য় হিজরির ১৭ রমজান (আনু. ১৩ মার্চ ৬২৪ খ্রি.)",en:"17 Ramadan 2 AH (c. 13 March 624 CE)"}},
+  {k:{bn:"স্থান",en:"Place"},v:{bn:"বদর উপত্যকা, মদিনা থেকে দক্ষিণ-পশ্চিমে সরলরেখায় আনুমানিক ১২০ কিমি",en:"Badr valley, roughly 120 km south-west of Medina in a straight line"}},
+  {k:{bn:"ফলাফল",en:"Result"},v:{bn:"মুসলিমদের নির্ণায়ক বিজয়",en:"Decisive Muslim victory"}},
+  {k:{bn:"মুসলিম নেতৃত্ব",en:"Muslim leadership"},v:{bn:"নবী মুহাম্মদ ﷺ",en:"The Prophet Muhammad ﷺ"}},
+  {k:{bn:"কুরাইশ নেতৃত্ব",en:"Quraysh leadership"},v:{bn:"আবু জাহল (আমর ইবনে হিশাম), উতবা ইবনে রাবীআ প্রমুখ",en:"Abu Jahl (Amr ibn Hisham), Utba ibn Rabi'a and others"}},
+  {k:{bn:"বাহিনী",en:"Strength"},v:{bn:"মুসলিম ৩১৩ জন; কুরাইশ প্রায় ৯৫০–১,০০০ (অনুমান ৬০০–১,৩০০)",en:"Muslims 313; Quraysh c. 950–1,000 (estimates 600–1,300)"}},
+  {k:{bn:"হতাহত",en:"Casualties"},v:{bn:"মুসলিম ১৪ শহিদ; কুরাইশ প্রায় ৭০ নিহত, প্রায় ৭০ বন্দি",en:"Muslims 14 killed; Quraysh c. 70 killed, c. 70 captured"}},
+  {k:{bn:"কুরআনে",en:"In the Qur'an"},v:{bn:"সূরা আলে ইমরান ৩:১২৩; সূরা আনফাল ৮:৫–১৯, ৮:৪১, ৮:৬৭–৭১",en:"Sura Al Imran 3:123; Sura al-Anfal 8:5–19, 8:41, 8:67–71"}}
+ ],
+ stats:[
+  {n:"313",l:{bn:"মুসলিম যোদ্ধা",en:"Muslim fighters"}},
+  {n:"~1,000",l:{bn:"কুরাইশ (প্রচলিত অনুমান)",en:"Quraysh (common estimate)"}},
+  {n:"14",l:{bn:"মুসলিম শহিদ",en:"Muslim martyrs"}},
+  {n:"~70",l:{bn:"কুরাইশ নিহত",en:"Quraysh killed"}},
+  {n:"~70",l:{bn:"কুরাইশ বন্দি",en:"Quraysh captured"}}
+ ],
+ timeline:[
+  {when:{bn:"৬২২ খ্রি. (১ হি.)",en:"622 CE (1 AH)"},what:{bn:"মক্কা থেকে মদিনায় হিজরত; মদিনায় মুসলিম সম্প্রদায়ের গঠন।{ish|হিজরত ও মদিনার প্রাথমিক বছর}",en:"The Hijra from Mecca to Medina; formation of the Muslim community there.{ish|Hijra and the early Medina years}"}},
+  {when:{bn:"রজব, ২ হি.",en:"Rajab, 2 AH"},what:{bn:"নাখলায় মুসলিম অভিযানে কুরাইশের ইবনুল হাদরামি নিহত — মক্কায় প্রতিশোধের আবেগ বাড়ে।{ish|নাখলা অভিযান}",en:"At Nakhla a Muslim expedition kills Ibn al-Hadrami of Quraysh — fuelling calls for revenge in Mecca.{ish|The Nakhla expedition}"}},
+  {when:{bn:"রমজান, ২ হি.",en:"Ramadan, 2 AH"},what:{bn:"সিরিয়া থেকে ফেরা আবু সুফিয়ানের কাফেলা আটকাতে মুসলিমদের যাত্রা। আবু সুফিয়ান পথ বদলে সমুদ্রতীরের দিকে যান এবং মক্কায় সাহায্য চেয়ে দূত পাঠান।{waq|বদর অধ্যায়}",en:"The Muslims set out to intercept Abu Sufyan's caravan returning from Syria. Abu Sufyan turns toward the coast and sends a messenger to Mecca for help.{waq|Badr chapter}"}},
+  {when:{bn:"আল-জুহফা",en:"al-Juhfa"},what:{bn:"কাফেলা নিরাপদ জেনেও আবু জাহল এগোনোর জেদ ধরে; বনু যুহরা (প্রায় ৩০০) ফিরে যায়।{ish|কুরাইশের যাত্রা}",en:"Though told the caravan is safe, Abu Jahl insists on advancing; Banu Zuhra (c. 300 men) turn back.{ish|The Quraysh march}"}},
+  {when:{bn:"১৭ রমজান, ২ হি.",en:"17 Ramadan, 2 AH"},what:{bn:"বদরের যুদ্ধ: দ্বন্দ্বযুদ্ধ, এরপর সাধারণ সংঘর্ষ; কুরাইশ বাহিনীর পরাজয়।{ik|২য় হিজরির ঘটনাবলি — বদর অধ্যায়}",en:"The battle: single combats, then a general engagement; the Quraysh army is routed.{ik|Events of 2 AH — Badr chapter}"}},
+  {when:{bn:"যুদ্ধের পর",en:"After the battle"},what:{bn:"বন্দিদের মুক্তিপণের সিদ্ধান্ত; মুসলিমদের মদিনায় প্রত্যাবর্তন।{ish|বন্দিদের বিষয়ে সিদ্ধান্ত}",en:"Decision to ransom the prisoners; the Muslims return to Medina.{ish|The decision on the prisoners}"}},
+  {when:{bn:"শাওয়াল, ৩ হি.",en:"Shawwal, 3 AH"},what:{bn:"কুরাইশ প্রতিশোধ নিতে আসে — উহুদের যুদ্ধ।{ish|উহুদের যুদ্ধ}",en:"The Quraysh return seeking revenge — the Battle of Uhud.{ish|The Battle of Uhud}"}}
+ ],
+ map:{
+  center:[23.3,39.2],zoom:7,
+  caption:{bn:"মানচিত্র: মক্কা, বদর ও মদিনা। রেখা দুটি যাত্রাপথের সরলীকৃত চিত্র মাত্র, প্রকৃত পথ নয়; বদরের স্থানাঙ্ক আনুমানিক (২৩°৪৪′ উ, ৩৮°৪৬′ পূ)।",en:"Map: Mecca, Badr and Medina. The two lines are simplified schematics of the marches, not the actual routes; Badr's coordinates are approximate (23°44′N, 38°46′E)."},
+  points:[
+   {lat:24.4672,lng:39.6111,n:{bn:"মদিনা",en:"Medina"},d:{bn:"মুসলিমদের যাত্রার সূচনাস্থল।",en:"Starting point of the Muslim march."}},
+   {lat:23.7333,lng:38.7667,n:{bn:"বদর",en:"Badr"},d:{bn:"যুদ্ধক্ষেত্র — কূপবিশিষ্ট উপত্যকা।",en:"The battlefield — a valley with wells."}},
+   {lat:21.4225,lng:39.8262,n:{bn:"মক্কা",en:"Mecca"},d:{bn:"কুরাইশ বাহিনীর যাত্রার সূচনাস্থল।",en:"Starting point of the Quraysh army."}}
+  ],
+  lines:[
+   {pts:[[24.4672,39.6111],[23.7333,38.7667]],c:"#0f5a4a",n:{bn:"মুসলিমদের যাত্রা (সরলীকৃত)",en:"Muslim march (schematic)"}},
+   {pts:[[21.4225,39.8262],[23.7333,38.7667]],c:"#8a2b3a",n:{bn:"কুরাইশদের যাত্রা (সরলীকৃত)",en:"Quraysh march (schematic)"}}
+  ]
+ },
+ further:["lings","mub","ei2"],
+
+ sections:[
+  {id:"overview",h:{bn:"সারসংক্ষেপ",en:"Overview"},blocks:[
+   {t:"note",bn:"এই আর্টিকেলের প্রতিটি ফুটনোটে সূত্রগ্রন্থের নাম ও অধ্যায় দেওয়া আছে। নির্দিষ্ট সংস্করণের পৃষ্ঠা-নম্বর মিলিয়ে যুক্ত করা হচ্ছে — তাই এখন 'পৃষ্ঠা: যাচাই বাকি' লেখা দেখাবে।",en:"Every footnote names the source and chapter. Page numbers for specific editions are being checked and added, so for now they read 'page: pending verification'."},
+   {t:"p",bn:"বদরের যুদ্ধ (غزوة بدر الكبرى) মদিনার মুসলিম সম্প্রদায় ও মক্কার কুরাইশদের মধ্যে সংঘটিত প্রথম বড় সামরিক সংঘর্ষ। প্রচলিত বর্ণনা অনুযায়ী এটি ঘটে ২য় হিজরির ১৭ রমজান, যা খ্রিষ্টীয় ক্যালেন্ডারে ৬২৪ সালের মার্চ মাস (আনুমানিক ১৩ মার্চ)।{ik|২য় হিজরির ঘটনাবলি — বদর অধ্যায়}{brit|'Battle of Badr' এন্ট্রি}",en:"The Battle of Badr (غزوة بدر الكبرى) was the first major military clash between the Muslim community of Medina and the Quraysh of Mecca. By the common reckoning it took place on 17 Ramadan 2 AH, which corresponds to March 624 CE (c. 13 March).{ik|Events of 2 AH — Badr chapter}{brit|Entry 'Battle of Badr'}"},
+   {t:"p",bn:"যুদ্ধটি হয় বদর উপত্যকায়, মদিনা থেকে দক্ষিণ-পশ্চিমে সরলরেখায় আনুমানিক ১২০ কিলোমিটার দূরে (সড়কপথে দূরত্ব বেশি)। প্রায় ৩১৩ জন মুসলিম তাঁদের প্রায় তিনগুণ বড় কুরাইশ বাহিনীকে পরাজিত করেন।{ish|গাযওয়াতু বদর আল-কুবরা}{brit|'Battle of Badr' এন্ট্রি}",en:"It was fought in the valley of Badr, roughly 120 km south-west of Medina in a straight line (the road distance is longer). About 313 Muslims defeated a Quraysh force roughly three times their size.{ish|Ghazwat Badr al-Kubra}{brit|Entry 'Battle of Badr'}"},
+   {t:"p",bn:"কুরআনে বদর নাম ধরে উল্লিখিত হয়েছে (৩:১২৩), আর সূরা আনফালে এই দিনকে 'ইয়াওমুল ফুরকান' — সত্য ও মিথ্যার পার্থক্যের দিন — বলা হয়েছে (৮:৪১)।{quran|৩:১২৩; ৮:৪১}",en:"The Qur'an names Badr explicitly (3:123), and Sura al-Anfal calls the day Yawm al-Furqan — the day of criterion between truth and falsehood (8:41).{quran|3:123; 8:41}"},
+   {t:"p",bn:"বাংলা পাঠের জন্য দেখুন: মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ৩।{rehan|খণ্ড ৩, বদর অংশ}",en:"For Bengali readers: Maulana Ismail Rehan, Muslim Ummah's History, vol. 3.{rehan|vol. 3, Badr section}"},
+   {t:"info"},
+   {t:"stats"},
+   {t:"bars",h:{bn:"সংখ্যার তুলনা: যোদ্ধা",en:"Comparing the numbers: fighters"},rows:[
+     {l:{bn:"মুসলিম",en:"Muslims"},v:{bn:"৩১৩",en:"313"},pct:31.3,c:"#0f5a4a"},
+     {l:{bn:"কুরাইশ (প্রচলিত অনুমান)",en:"Quraysh (common estimate)"},v:{bn:"~১,০০০",en:"~1,000"},pct:100,c:"#8a2b3a"}],
+     note:{bn:"কুরাইশদের সংখ্যা সূত্রভেদে ভিন্ন; এখানে প্রচলিত ~১,০০০ ধরা হয়েছে (দেখুন 'সূত্রভেদ ও মতপার্থক্য')।{ish|কুরাইশ বাহিনীর সংখ্যা}",en:"The Quraysh figure varies by source; ~1,000 is used here as the commonly cited number (see 'Variant Reports and Debates').{ish|Size of the Quraysh army}"}},
+   {t:"bars",h:{bn:"সংখ্যার তুলনা: হতাহত",en:"Comparing the numbers: casualties"},rows:[
+     {l:{bn:"মুসলিম শহিদ",en:"Muslims killed"},v:{bn:"১৪",en:"14"},pct:20,c:"#0f5a4a"},
+     {l:{bn:"কুরাইশ নিহত",en:"Quraysh killed"},v:{bn:"~৭০",en:"~70"},pct:100,c:"#8a2b3a"},
+     {l:{bn:"কুরাইশ বন্দি",en:"Quraysh captured"},v:{bn:"~৭০",en:"~70"},pct:100,c:"#b8892b"}],
+     note:{bn:"শহিদ ও নিহতদের নামসহ তালিকা ইবনে ইসহাক-ইবনে হিশামে ও ইবনে সা'দে পাওয়া যায়।{sad|বদরি সাহাবিগণ}",en:"Named lists of the martyrs and the slain are found in Ibn Ishaq–Ibn Hisham and in Ibn Sa'd.{sad|The Badr participants}"}}
+  ]},
+
+  {id:"background",h:{bn:"পটভূমি",en:"Background"},blocks:[
+   {t:"p",bn:"৬২২ সালে হিজরতের পর মক্কার মুহাজিরদের অনেকে সম্পদ ফেলে মদিনায় আসেন। কুরাইশ ও মদিনার নতুন গঠিত সম্প্রদায়ের মধ্যে উত্তেজনা বাড়তে থাকে, এবং বাণিজ্যপথ ও কাফেলা এই দ্বন্দ্বে গুরুত্বপূর্ণ ভূমিকা রাখে।{ish|হিজরত ও মদিনার প্রাথমিক বছর}{watt|Muhammad at Medina, বদরের পটভূমি}",en:"After the Hijra of 622, many of the Meccan Muhajirun arrived in Medina leaving their property behind. Tension grew between the Quraysh and the newly formed community of Medina, and trade routes and caravans played a central role in the conflict.{ish|Hijra and the early Medina years}{watt|Muhammad at Medina, background to Badr}"},
+   {t:"p",bn:"২য় হিজরির রজব মাসে নাখলায় একটি মুসলিম অভিযানে কুরাইশের ইবনুল হাদরামি নিহত হন; এতে মক্কায় প্রতিশোধের আবেগ বাড়ে।{ish|নাখলা অভিযান}",en:"In Rajab of 2 AH, a Muslim expedition at Nakhla killed Ibn al-Hadrami of the Quraysh, which increased the desire for revenge in Mecca.{ish|The Nakhla expedition}"},
+   {t:"p",bn:"এরপর খবর আসে যে আবু সুফিয়ানের নেতৃত্বে একটি বড় কুরাইশ বাণিজ্য কাফেলা সিরিয়া থেকে ফিরছে। বর্ণনায় কাফেলার মূল্য প্রায় ৫০,০০০ দিনার এবং রক্ষী প্রায় ৭০ জন। মুসলিমরা কাফেলা আটকাতে বের হন; আবু সুফিয়ান পথ বদলে সমুদ্রতীরের দিকে সরে যান এবং মক্কায় সাহায্য চেয়ে এক দূত পাঠান।{waq|বদর অধ্যায়}{ish|আবু সুফিয়ানের কাফেলা}",en:"News then arrived that a large Quraysh trade caravan under Abu Sufyan was returning from Syria. The reports put its value at about 50,000 dinars with roughly 70 guards. The Muslims set out to intercept it; Abu Sufyan changed course toward the coast and sent a messenger to Mecca asking for help.{waq|Badr chapter}{ish|Abu Sufyan's caravan}"},
+   {t:"p",bn:"পথে পরামর্শসভায় আনসারদের মত চাওয়া হলে সা'দ ইবনে মুআজ (রা.) প্রমুখ নবী ﷺ-কে পূর্ণ সমর্থনের কথা জানান।{ish|বদরের পথে পরামর্শ}",en:"On the way, when the Prophet ﷺ consulted the Ansar, Sa'd ibn Mu'adh (r.a.) and others pledged their full support.{ish|Consultation on the road to Badr}"}
+  ]},
+
+  {id:"march",h:{bn:"যাত্রা ও রণক্ষেত্র",en:"The March and the Battlefield"},blocks:[
+   {t:"p",bn:"মুসলিম বাহিনীতে ছিলেন ৩১৩ জন — মুহাজির ৮২ ও আনসার ২৩১ (আউস ৬১, খাযরাজ ১৭০) — সঙ্গে দুটি ঘোড়া ও প্রায় ৭০টি উট। এটি ইবনে ইসহাকের বদরি তালিকাভিত্তিক বর্ণনা।{ish|বদরি সাহাবিদের তালিকা}{sad|বদরি সাহাবিগণ}",en:"The Muslim force numbered 313 — 82 Muhajirun and 231 Ansar (61 Aws, 170 Khazraj) — with two horses and about 70 camels, according to the Badr roster in Ibn Ishaq's account.{ish|Roster of the Badr participants}{sad|The Badr participants}"},
+   {t:"p",bn:"কুরাইশ বাহিনী মক্কা থেকে যাত্রা করে। আল-জুহফায় আবু সুফিয়ানের বার্তা আসে যে কাফেলা নিরাপদ, ফিরে যাওয়া যায়। আবু জাহল এগিয়ে যাওয়ার ওপর জোর দেয়; বনু যুহরা (প্রায় ৩০০ জন) ফিরে যায়।{ish|কুরাইশের যাত্রা}{waq|বদর অধ্যায়}",en:"The Quraysh army marched out of Mecca. At al-Juhfa, Abu Sufyan's message arrived saying the caravan was safe and they could turn back. Abu Jahl insisted on going on; the Banu Zuhra (about 300 men) withdrew.{ish|The Quraysh march}{waq|Badr chapter}"},
+   {t:"p",bn:"বদরে পৌঁছে হুবাব ইবনুল মুনযির (রা.)-এর রণকৌশলগত পরামর্শে মুসলিমরা কুরাইশদের দিকের নিকটতম কূপের কাছে অবস্থান নেন এবং অন্য কূপগুলো নষ্ট করে দেন। কুরাইশরা উপত্যকার দক্ষিণ-পূর্ব দিকে শিবির করে।{ish|যুদ্ধের পূর্বের অবস্থান}{waq|বদর অধ্যায়}",en:"On reaching Badr, on the tactical advice of Hubab ibn al-Mundhir (r.a.), the Muslims took position at the well nearest the Quraysh side and destroyed the other wells. The Quraysh camped in the south-east of the valley.{ish|Positions before the battle}{waq|Badr chapter}"},
+   {t:"map"},
+   {t:"fig",bn:"এখানে বদর অঞ্চলের একটি যাচাই-করা Wikimedia Commons ছবি (লাইসেন্স ও ক্রেডিটসহ) বসবে।",en:"A verified Wikimedia Commons photograph of the Badr area (with licence and credit) will be placed here."}
+  ]},
+
+  {id:"battle",h:{bn:"যুদ্ধের গতিপ্রকৃতি",en:"The Course of the Battle"},blocks:[
+   {t:"p",bn:"যুদ্ধ শুরু হয় প্রথাগত দ্বন্দ্বযুদ্ধে। কুরাইশ পক্ষ থেকে উতবা, তার ভাই শায়বা ও পুত্র ওয়ালিদ এগিয়ে আসে; মুসলিম পক্ষ থেকে মোকাবিলা করেন হামজা, আলী ও উবাইদা ইবনুল হারিস (রা.)। বর্ণনা অনুযায়ী হামজা শায়বাকে এবং আলী ওয়ালিদকে হত্যা করেন; উবাইদা গুরুতর আহত হন এবং পরে ইন্তেকাল করেন।{ish|দ্বন্দ্বযুদ্ধ}{waq|বদর অধ্যায়}",en:"The battle opened with the customary single combats. From the Quraysh, Utba, his brother Shayba and his son al-Walid came forward; the Muslims were represented by Hamza, Ali and Ubayda ibn al-Harith (r.a.). According to the accounts, Hamza killed Shayba and Ali killed al-Walid; Ubayda was gravely wounded and died later.{ish|The single combats}{waq|Badr chapter}"},
+   {t:"p",bn:"এরপর সাধারণ সংঘর্ষে মুসলিমরা সারিবদ্ধভাবে লড়েন। কুরাইশ বাহিনী ভেঙে পড়ে; আবু জাহল ও উমাইয়া ইবনে খালাফসহ কুরাইশের বহু নেতা নিহত হয়।{ish|বদরে নিহত কুরাইশ নেতাগণ}",en:"A general engagement followed in which the Muslims fought in ranks. The Quraysh army broke; many of its leaders, including Abu Jahl and Umayya ibn Khalaf, were killed.{ish|Quraysh leaders slain at Badr}"},
+   {t:"p",bn:"সহিহ বুখারির বর্ণনায় আছে, আনসারের দুই তরুণ আবু জাহলকে আঘাত করে ফেলে দেন এবং পরে আবদুল্লাহ ইবনে মাসউদ (রা.) তার শেষ কাজটুকু সারেন।{bukh|কিতাবুল মাগাযি — আবু জাহলের নিহত হওয়ার বর্ণনা}",en:"In the narration of Sahih al-Bukhari, two young men of the Ansar struck Abu Jahl down and Abdullah ibn Mas'ud (r.a.) later finished him.{bukh|Kitab al-Maghazi — the account of Abu Jahl's death}"},
+   {t:"p",bn:"কুরআন এই যুদ্ধে ফেরেশতাদের সাহায্যের কথা বলেছে (৩:১২৩–১২৫; ৮:৯)। এটি কুরআনের নিজস্ব বর্ণনা, যা এখানে সেভাবেই উদ্ধৃত।{quran|৩:১২৩–১২৫; ৮:৯}",en:"The Qur'an speaks of angelic support at this battle (3:123–125; 8:9). This is the Qur'an's own account and is cited here as such.{quran|3:123–125; 8:9}"}
+  ]},
+
+  {id:"timeline",h:{bn:"ঘটনাপঞ্জি",en:"Timeline"},blocks:[{t:"tl"}]},
+
+  {id:"aftermath",h:{bn:"যুদ্ধের পর",en:"Aftermath"},blocks:[
+   {t:"p",bn:"মুসলিম পক্ষে ১৪ জন শহিদ হন — ৬ জন মুহাজির ও ৮ জন আনসার। কুরাইশ পক্ষে প্রায় ৭০ জন নিহত ও প্রায় ৭০ জন বন্দি হয়।{ish|বদরের শহিদ ও নিহতদের তালিকা}{sad|বদরি সাহাবিগণ}",en:"Fourteen Muslims were martyred — six Muhajirun and eight Ansar. On the Quraysh side about 70 were killed and about 70 taken prisoner.{ish|Lists of the martyrs and the slain}{sad|The Badr participants}"},
+   {t:"p",bn:"বন্দিদের বিষয়ে আবু বকর (রা.) মুক্তিপণের পরামর্শ দেন, উমর (রা.) কঠোর ব্যবস্থার মত দেন; নবী ﷺ মুক্তিপণের পরামর্শ গ্রহণ করেন। সূরা আনফালের ৬৭–৭১ আয়াতে এ প্রসঙ্গ এসেছে।{ish|বন্দিদের বিষয়ে সিদ্ধান্ত}{quran|৮:৬৭–৭১}",en:"On the prisoners, Abu Bakr (r.a.) advised ransom while Umar (r.a.) favoured harsher treatment; the Prophet ﷺ accepted the advice to ransom. The matter is addressed in Sura al-Anfal, 8:67–71.{ish|The decision on the prisoners}{quran|8:67–71}"},
+   {t:"p",bn:"বর্ণনায় আছে, লিখতে-পড়তে জানা কিছু বন্দি দশজন মুসলিম শিশুকে শিক্ষা দিয়ে মুক্তি পান।{sad|বদরের বন্দিদের বিবরণ}",en:"It is reported that some literate prisoners earned their release by teaching ten Muslim children to read and write.{sad|Accounts of the Badr prisoners}"},
+   {t:"p",bn:"গনিমত ও যুদ্ধসংক্রান্ত বিধান নিয়ে সূরা আনফালে আলোচনা এসেছে (৮:১, ৮:৪১)।{quran|৮:১; ৮:৪১}",en:"Sura al-Anfal addresses the spoils and rules of war (8:1, 8:41).{quran|8:1; 8:41}"}
+  ]},
+
+  {id:"people",h:{bn:"প্রধান ব্যক্তিগণ",en:"Key Figures"},blocks:[
+   {t:"people",rows:[
+    {c:"#0f5a4a",n:{bn:"নবী মুহাম্মদ ﷺ",en:"The Prophet Muhammad ﷺ"},r:{bn:"মুসলিম বাহিনীর নেতা",en:"Leader of the Muslim force"}},
+    {c:"#0f5a4a",n:{bn:"হামজা ইবনে আবদুল মুত্তালিব (রা.)",en:"Hamza ibn Abd al-Muttalib (r.a.)"},r:{bn:"দ্বন্দ্বযুদ্ধে শায়বাকে পরাজিত করেন",en:"Defeated Shayba in single combat"}},
+    {c:"#0f5a4a",n:{bn:"আলী ইবনে আবি তালিব (রা.)",en:"Ali ibn Abi Talib (r.a.)"},r:{bn:"দ্বন্দ্বযুদ্ধে ওয়ালিদকে পরাজিত করেন",en:"Defeated al-Walid in single combat"}},
+    {c:"#0f5a4a",n:{bn:"উবাইদা ইবনুল হারিস (রা.)",en:"Ubayda ibn al-Harith (r.a.)"},r:{bn:"দ্বন্দ্বযুদ্ধে গুরুতর আহত; পরে ইন্তেকাল",en:"Gravely wounded in single combat; died later"}},
+    {c:"#0f5a4a",n:{bn:"হুবাব ইবনুল মুনযির (রা.)",en:"Hubab ibn al-Mundhir (r.a.)"},r:{bn:"কূপের অবস্থান নিয়ে রণকৌশলগত পরামর্শ",en:"Tactical advice on the wells"}},
+    {c:"#0f5a4a",n:{bn:"সা'দ ইবনে মুআজ (রা.)",en:"Sa'd ibn Mu'adh (r.a.)"},r:{bn:"আনসারদের পক্ষ থেকে পূর্ণ সমর্থনের ঘোষণা",en:"Voiced the Ansar's full support"}},
+    {c:"#8a2b3a",n:{bn:"আবু জাহল (আমর ইবনে হিশাম)",en:"Abu Jahl (Amr ibn Hisham)"},r:{bn:"কুরাইশ নেতা; যুদ্ধে নিহত",en:"Quraysh leader; killed in the battle"}},
+    {c:"#8a2b3a",n:{bn:"উতবা, শায়বা ও ওয়ালিদ ইবনে উতবা",en:"Utba, Shayba and al-Walid ibn Utba"},r:{bn:"কুরাইশের দ্বন্দ্বযোদ্ধা; সবাই নিহত",en:"Quraysh champions; all were killed"}},
+    {c:"#8a2b3a",n:{bn:"আবু সুফিয়ান ইবনে হারব",en:"Abu Sufyan ibn Harb"},r:{bn:"বাণিজ্য কাফেলার নেতা",en:"Leader of the trade caravan"}}
+   ]}
+  ]},
+
+  {id:"significance",h:{bn:"তাৎপর্য",en:"Significance"},blocks:[
+   {t:"p",bn:"এই বিজয় মদিনার মুসলিম সম্প্রদায়কে কুরাইশের কর্তৃত্বের বিরুদ্ধে একটি কার্যকর প্রতিদ্বন্দ্বী শক্তি হিসেবে প্রতিষ্ঠিত করে।{brit|'Battle of Badr' এন্ট্রি}{watt|Muhammad at Medina, বদর-পরবর্তী ফলাফল}",en:"The victory established the Muslim community of Medina as a viable challenger to Quraysh dominance.{brit|Entry 'Battle of Badr'}{watt|Muhammad at Medina, consequences of Badr}"},
+   {t:"p",bn:"কুরাইশরা প্রতিশোধ নিতে পরের বছর (৩য় হিজরি) উহুদে আসে।{ish|উহুদের যুদ্ধ}",en:"The Quraysh returned the next year (3 AH) seeking revenge at Uhud.{ish|The Battle of Uhud}"}
+  ]},
+
+  {id:"variants",h:{bn:"সূত্রভেদ ও মতপার্থক্য",en:"Variant Reports and Debates"},blocks:[
+   {t:"var",h:{bn:"তারিখ:",en:"Date:"},bn:"১৭ রমজান সবচেয়ে প্রচলিত; কিছু সূত্রে ১৯ বা ২১ রমজানের উল্লেখও পাওয়া যায়।",en:"17 Ramadan is the most common date; some sources also give the 19th or 21st."},
+   {t:"var",h:{bn:"কুরাইশদের সংখ্যা:",en:"Quraysh numbers:"},bn:"অনুমান ৬০০ থেকে ১,৩০০ পর্যন্ত; প্রচলিত বর্ণনা প্রায় ৯৫০–১,০০০।",en:"Estimates range from about 600 to 1,300; the commonly reported figure is about 950–1,000."},
+   {t:"var",h:{bn:"দ্বন্দ্বযুদ্ধের খুঁটিনাটি:",en:"Details of the duels:"},bn:"কে কার মোকাবিলা করেন, সে বিষয়ে সূত্রভেদে কিছু পার্থক্য আছে।",en:"Sources differ somewhat on who faced whom."},
+   {t:"var",h:{bn:"সূত্রের প্রকৃতি:",en:"Nature of the sources:"},bn:"ইবনে হিশামের গ্রন্থ ইবনে ইসহাকের সীরাতের সম্পাদিত রূপ। ওয়াকিদি বিস্তারিত সামরিক বিবরণ দেন, তবে হাদিসবিদদের কাছে তিনি বর্ণনায় দুর্বল বিবেচিত। ইবনে কাসির পরবর্তী যুগের সংকলক।",en:"Ibn Hisham's work is an edited recension of Ibn Ishaq's Sira. al-Waqidi gives detailed military narrative but is considered weak in hadith transmission by hadith critics. Ibn Kathir is a later compiler."},
+   {t:"note",bn:"উপরের তারিখ ও সংখ্যার ভিন্নমতগুলো আধুনিক সারসংক্ষেপ দেখে লিপিবদ্ধ করা হয়েছে; মূল সূত্রের নির্দিষ্ট সংস্করণের সাথে মিলিয়ে চূড়ান্ত করা হবে।",en:"The variant dates and numbers above were recorded from modern summaries; they will be finalised against specific editions of the primary sources."}
+  ]}
+ ]
+};
+render();
+</script>
+</body>
+</html>
