@@ -138,21 +138,6 @@ body[data-lang="en"] .bn{display:none}
  <h3><span class="bn">বদরের যুদ্ধ</span><span class="en">The Battle of Badr</span></h3>
  <p><span class="bn">মানচিত্র, ঘটনাপঞ্জি ও সূত্রসহ ফুটনোটে সাজানো প্রথম আর্টিকেল →</span><span class="en">Our first article, with map, timeline and sourced footnotes →</span></p>
 </a>
-<section id="featured">
-<style>
-body[data-lang="bn"] .en{display:none}
-body[data-lang="en"] .bn{display:none}
-.feat{display:block;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:14px;padding:22px 26px;text-decoration:none;color:var(--ink)}
-.feat:hover{box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.feat small{color:var(--gold);font-weight:700}
-.feat h3{font-family:'Amiri','Noto Serif Bengali',serif;font-size:1.6rem;color:var(--green);margin:4px 0}
-</style>
-<h2><span class="bn">নির্বাচিত আর্টিকেল</span><span class="en">Featured Article</span></h2>
-<a class="feat" href="badr.html">
- <small><span class="bn">সীরাত · ২য় হিজরি</span><span class="en">Seerah · 2 AH</span></small>
- <h3><span class="bn">বদরের যুদ্ধ</span><span class="en">The Battle of Badr</span></h3>
- <p><span class="bn">মানচিত্র, ঘটনাপঞ্জি ও সূত্রসহ ফুটনোটে সাজানো প্রথম আর্টিকেল →</span><span class="en">Our first article, with map, timeline and sourced footnotes →</span></p>
-</a>
 </section>
 <section id="scholars">
  <h2 data-i18n="sc_h"></h2><p class="sub" data-i18n="sc_s"></p>
@@ -241,7 +226,9 @@ function render(){
  document.querySelectorAll("[data-i18n-ph]").forEach(e=>e.placeholder=t[e.dataset.i18nPh]);
  $("#rail").innerHTML=t.eras.map((e,i)=>`<button style="--c:${COL[i]}" class="${i==era?'on':''}" onclick="era=${i};render()">${e[0]}</button>`).join("");
  const e=t.eras[era];
- $("#panel").innerHTML=`<h3>${e[0]}</h3><div class="meta">${e[1]} · ${e[2]}</div><p>${e[3]}</p><div style="margin-top:12px">${e[4].map(x=>`<span class="tag">${x}</span>`).join("")}</div>`;
+ const ART={1:[["badr.html","বদরের যুদ্ধ","The Battle of Badr"],["seerah-birth.html","মক্কা, বংশ ও জন্ম","Mecca, Lineage and Birth"]]};
+ const arts=(ART[era]||[]).map(a=>`<a class="btn" style="background:var(--green);color:#fff;margin:4px 6px 0 0;padding:8px 18px;font-size:.9rem" href="${a[0]}">📖 ${lang==="bn"?a[1]:a[2]} →</a>`).join("");
+ $("#panel").innerHTML=`<h3>${e[0]}</h3><div class="meta">${e[1]} · ${e[2]}</div><p>${e[3]}</p><div style="margin-top:12px">${e[4].map(x=>`<span class="tag">${x}</span>`).join("")}</div>${arts?`<div style="margin-top:14px"><b style="color:var(--gold)">${lang==="bn"?"এই যুগের আর্টিকেল":"Articles for this era"}</b><br>${arts}</div>`:""}`;
  $("#cards").innerHTML=t.eras.map((e,i)=>`<div class="card" data-s="${(e[0]+e[3]+e[4].join(' ')).toLowerCase()}" style="--c:${COL[i]}"><div class="top">${e[0]}</div><div class="bd"><small>${e[1]} · ${e[2]}</small><p style="margin-top:6px">${e[3]}</p></div></div>`).join("");
  $("#glos").innerHTML=t.glos.map(g=>`<div><b>${g[0]}</b><br>${g[1]}</div>`).join("");
  $("#reflist").innerHTML=SOURCES.map(s=>`<li>${s}</li>`).join("");
