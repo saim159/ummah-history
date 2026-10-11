@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>যৌবন, খাদিজা (রা.) ও কাবা পুনর্নির্মাণ — Ummah Chronicles</title>
+<meta name="description" content="Youth, marriage to Khadija (r.a.), Hilf al-Fudul and the rebuilding of the Kaaba: a sourced bilingual article.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+</head>
+<body data-lang="bn">
+<div id="prog"></div>
+<div id="app"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="article.js"></script>
+<script>
+const ARTICLE={
+ id:"seerah-khadija",
+ arabic:"شباب النبي ﷺ وزواجه من خديجة",
+ title:{bn:"যৌবন, খাদিজা (রা.) ও কাবা পুনর্নির্মাণ",en:"Youth, Khadija (r.a.) and the Rebuilding of the Kaaba"},
+ subtitle:{bn:"নবুয়তের আগের মক্কার জীবন — বাণিজ্য, বিবাহ, হিলফুল ফুজুল ও কাবা পুনর্নির্মাণ; আনু. ৫৮৫–৬০৫ খ্রিষ্টাব্দ।",en:"Life in Mecca before prophethood — trade, marriage, Hilf al-Fudul and the rebuilding of the Kaaba; c. 585–605 CE."},
+ badges:[{bn:"সীরাত · মাক্কী জীবন",en:"Seerah · Meccan period"},{bn:"খণ্ড ২",en:"Vol. 2"},{bn:"খসড়া: পৃষ্ঠা-নম্বর যাচাই চলছে",en:"Draft: page numbers being verified"}],
+ info:[
+  {k:{bn:"সময়কাল",en:"Period"},v:{bn:"আনু. ৫৮৫ – ৬০৫ খ্রি. (সূত্রভেদে কিছু পার্থক্য আছে)",en:"c. 585–605 CE (sources differ somewhat)"}},
+  {k:{bn:"স্থান",en:"Place"},v:{bn:"মক্কা; বাণিজ্য-সফরে সিরিয়া (বুসরা)",en:"Mecca; trading journey to Syria (Busra)"}},
+  {k:{bn:"উপাধি",en:"Epithet"},v:{bn:"আল-আমীন (বিশ্বস্ত) — সততার জন্য খ্যাত{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}",en:"al-Amin (the trustworthy) — known for his honesty{ish|Rebuilding of the Kaaba and the Black Stone settlement}"}},
+  {k:{bn:"বিবাহ",en:"Marriage"},v:{bn:"খাদিজা বিনতে খুওয়াইলিদ (রা.), আনু. ২৫ বছর বয়সে{ish|খাদিজা (রা.)-এর সঙ্গে বিবাহ}",en:"Khadija bint Khuwaylid (r.a.), at about the age of 25{ish|Marriage to Khadija (r.a.)}"}},
+  {k:{bn:"সন্তান (খাদিজা (রা.) থেকে)",en:"Children (by Khadija r.a.)"},v:{bn:"দুই পুত্র (শৈশবেই ইন্তেকাল) ও চার কন্যা{sad|নবী ﷺ-এর সন্তানগণ}",en:"Two sons (died in infancy) and four daughters{sad|Children of the Prophet ﷺ}"}},
+  {k:{bn:"সামাজিক ঘটনা",en:"Social events"},v:{bn:"হিলফুল ফুজুল (মজলুমের পক্ষে চুক্তি); কাবা পুনর্নির্মাণ{ish|হিলফুল ফুজুল}",en:"Hilf al-Fudul (pact for the wronged); rebuilding of the Kaaba{ish|Hilf al-Fudul}"}}
+ ],
+ stats:[
+  {n:"~25",l:{bn:"বিবাহের সময় বয়স",en:"Age at marriage"}},
+  {n:"6",l:{bn:"খাদিজা (রা.) থেকে সন্তান",en:"Children by Khadija (r.a.)"}},
+  {n:"~35",l:{bn:"কাবা পুনর্নির্মাণের সময় বয়স",en:"Age at the Kaaba rebuilding"}},
+  {n:"~24",l:{bn:"বিবাহিত জীবনের বছর (খাদিজা (রা.)-এর জীবদ্দশায়)",en:"Years of marriage (in Khadija's lifetime)"}}
+ ],
+ timeline:[
+  {when:{bn:"আনু. ৫৮৫ – ৫৯০ খ্রি.",en:"c. 585–590 CE"},what:{bn:"কুরাইশ ও কিনানা-পক্ষ কায়স-পক্ষের বিরুদ্ধে 'হারবুল ফিজার'-এ জড়ায়; নবী ﷺ তরুণ বয়সে এতে সীমিত ভূমিকায় ছিলেন বলে বর্ণিত।{ish|ফিজারের যুদ্ধ}",en:"The Quraysh and Kinana were drawn into the 'Harb al-Fijar' against Qays; the Prophet ﷺ is reported to have had a limited role as a young man.{ish|The Fijar war}"}},
+  {when:{bn:"আনু. ৫৯০ খ্রি.",en:"c. 590 CE"},what:{bn:"হিলফুল ফুজুল — মক্কায় অত্যাচারিতের পক্ষে অঙ্গীকার।{ish|হিলফুল ফুজুল}",en:"Hilf al-Fudul — a pledge in Mecca on behalf of the wronged.{ish|Hilf al-Fudul}"}},
+  {when:{bn:"আনু. ৫৯৫ খ্রি.",en:"c. 595 CE"},what:{bn:"খাদিজা (রা.)-এর বাণিজ্য-কাফেলা নিয়ে সিরিয়া-সফর; ফিরে এসে বিবাহ।{ish|খাদিজা (রা.)-এর সঙ্গে বিবাহ}{sad|খাদিজা বিনতে খুওয়াইলিদ}",en:"Trading journey to Syria with Khadija's (r.a.) caravan; marriage on his return.{ish|Marriage to Khadija (r.a.)}{sad|Khadija bint Khuwaylid}"}},
+  {when:{bn:"আনু. ৬০৫ খ্রি.",en:"c. 605 CE"},what:{bn:"কাবার পুনর্নির্মাণ; হাজারে আসওয়াদ স্থাপনের বিরোধের মীমাংসা।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}",en:"The rebuilding of the Kaaba; settlement of the dispute over placing the Black Stone.{ish|Rebuilding of the Kaaba and the Black Stone settlement}"}},
+  {when:{bn:"আনু. ৬১০ খ্রি.",en:"c. 610 CE"},what:{bn:"পরবর্তী আর্টিকেল — প্রথম ওহী।",en:"Next article — the first revelation."}}
+ ],
+ map:{
+  center:[27,38.5],zoom:5,
+  caption:{bn:"মানচিত্র: মক্কা ও বুসরা (সিরিয়া)। রেখা সরলীকৃত চিত্র মাত্র, প্রকৃত বাণিজ্যপথ নয়; বুসরার স্থানাঙ্ক আনুমানিক।",en:"Map: Mecca and Busra (Syria). The line is schematic, not the actual trade route; Busra's coordinates are approximate."},
+  points:[
+   {lat:21.4225,lng:39.8262,n:{bn:"মক্কা",en:"Mecca"},d:{bn:"কুরাইশের বাণিজ্য ও কাবার শহর।",en:"The Quraysh trading city and home of the Kaaba."}},
+   {lat:32.52,lng:36.48,n:{bn:"বুসরা (আনুমানিক)",en:"Busra (approx.)"},d:{bn:"সিরিয়ার বাণিজ্যকেন্দ্র; কাফেলার গন্তব্য।",en:"Trading town in Syria; destination of the caravan."}}
+  ],
+  lines:[
+   {pts:[[21.4225,39.8262],[32.52,36.48]],c:"#b8892b",n:{bn:"মক্কা–সিরিয়া বাণিজ্য-সফর (সরলীকৃত)",en:"Mecca–Syria trade journey (schematic)"}}
+  ]
+ },
+ further:["lings","ei2","brit"],
+ sections:[
+  {id:"overview",h:{bn:"সারসংক্ষেপ",en:"Overview"},blocks:[
+   {t:"note",bn:"প্রতিটি ফুটনোটে সূত্রগ্রন্থের নাম ও অংশ দেওয়া আছে; সংস্করণভিত্তিক পৃষ্ঠা-নম্বর মিলিয়ে যুক্ত করা হচ্ছে, তাই এখন 'পৃষ্ঠা: যাচাই বাকি' দেখাবে।",en:"Each footnote names the source and section; edition-specific page numbers are being checked, so they currently read 'page: pending verification'."},
+   {t:"p",bn:"নবুয়তের আগের জীবনে মুহাম্মদ ﷺ মক্কার সমাজে সততা ও বিশ্বস্ততার জন্য পরিচিত ছিলেন; সূত্রগুলোতে তিনি 'আল-আমীন' উপাধিতে উল্লিখিত। তিনি ব্যবসায় যুক্ত হন, খাদিজা (রা.)-কে বিয়ে করেন এবং মক্কার সামাজিক কয়েকটি ঘটনায় অংশ নেন।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}{watt|Muhammad at Mecca, নবুয়তের আগের জীবন}",en:"Before prophethood, Muhammad ﷺ was known in Meccan society for honesty and trustworthiness; the sources call him 'al-Amin'. He took part in trade, married Khadija (r.a.) and was involved in several social events in Mecca.{ish|Rebuilding of the Kaaba and the Black Stone settlement}{watt|Muhammad at Mecca, life before prophethood}"},
+   {t:"p",bn:"এই পর্বের তথ্য প্রধানত ইবনে ইসহাক–ইবনে হিশাম ও ইবনে সা'দ-এর ওপর নির্ভরশীল; সমসাময়িক লিখিত সূত্র নেই, তাই আধুনিক গবেষকেরা বিস্তারিত অংশে সতর্ক থাকেন।{ish|যৌবনের ঘটনাবলি}{sad|খাদিজা বিনতে খুওয়াইলিদ}{watt|Muhammad at Mecca, সূত্র-সমস্যা}",en:"Information for this period rests mainly on Ibn Ishaq–Ibn Hisham and Ibn Sa'd; there are no contemporary written sources, so modern scholars are cautious about details.{ish|Events of his youth}{sad|Khadija bint Khuwaylid}{watt|Muhammad at Mecca, the problem of sources}"},
+   {t:"info"},
+   {t:"stats"},
+   {t:"p",bn:"বাংলা পাঠের জন্য দেখুন: মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ২।{rehan|খণ্ড ২, নবুয়তের আগের জীবন অংশ}",en:"For Bengali readers: Maulana Ismail Rehan, Muslim Ummah's History, vol. 2.{rehan|vol. 2, section on life before prophethood}"}
+  ]},
+
+  {id:"youth",h:{bn:"তরুণ বয়স ও সামাজিক জীবন",en:"Youth and Social Life"},blocks:[
+   {t:"p",bn:"আবু তালিবের তত্ত্বাবধানে বড় হওয়া তরুণ মুহাম্মদ ﷺ মক্কার সমাজের রীতি অনুযায়ী পরিশ্রম ও বাণিজ্যে নিযুক্ত হন। সূত্রে মেষচারণের কথাও এসেছে।{ish|যৌবনের ঘটনাবলি}{bukh|কিতাবুল ইজারাহ — মেষচারণ}",en:"Raised under Abu Talib's care, the young Muhammad ﷺ took up labour and trade in line with Meccan custom. The sources also mention shepherding.{ish|Events of his youth}{bukh|Kitab al-Ijara — shepherding}"},
+   {t:"p",bn:"কুরাইশ ও তাদের মিত্ররা কায়স গোত্রের বিরুদ্ধে 'হারবুল ফিজার'-এ জড়ায় — পবিত্র মাসের মর্যাদা লঙ্ঘনের কারণে এই নাম। নবী ﷺ তখন তরুণ ছিলেন এবং এতে তাঁর ভূমিকা সীমিত ছিল বলে বর্ণিত।{ish|ফিজারের যুদ্ধ}",en:"The Quraysh and their allies became involved in the 'Harb al-Fijar' against Qays — named for the violation of the sacred months. He was a young man and his role is reported to have been limited.{ish|The Fijar war}"},
+   {t:"p",bn:"এর পরে 'হিলফুল ফুজুল' সম্পাদিত হয়: মক্কার কয়েকটি বংশ আবদুল্লাহ ইবনে জুদআনের ঘরে সমবেত হয়ে অঙ্গীকার করে যে মক্কায় কেউ অত্যাচারিত হলে তারা তার পাশে দাঁড়াবে। নবী ﷺ পরে এই চুক্তির প্রশংসা করেছেন বলে বর্ণিত।{ish|হিলফুল ফুজুল}",en:"Afterwards the 'Hilf al-Fudul' was concluded: several Meccan clans met in the house of Abdullah ibn Jud'an and pledged to stand with anyone wronged in Mecca. The Prophet ﷺ is reported to have praised this pact later.{ish|Hilf al-Fudul}"}
+  ]},
+
+  {id:"khadija",h:{bn:"খাদিজা (রা.)-এর সঙ্গে বিবাহ",en:"Marriage to Khadija (r.a.)"},blocks:[
+   {t:"p",bn:"খাদিজা বিনতে খুওয়াইলিদ ছিলেন কুরাইশের একজন সম্মানিত ও ধনী ব্যবসায়ী নারী। তিনি বিশ্বস্ত ব্যক্তিদের মাধ্যমে নিজের বাণিজ্য-পণ্য পরিচালনা করাতেন।{ish|খাদিজা (রা.)-এর সঙ্গে বিবাহ}{sad|খাদিজা বিনতে খুওয়াইলিদ}",en:"Khadija bint Khuwaylid was a respected and wealthy merchant woman of the Quraysh. She had her trade goods managed through trusted agents.{ish|Marriage to Khadija (r.a.)}{sad|Khadija bint Khuwaylid}"},
+   {t:"p",bn:"নবী ﷺ-এর সততার খ্যাতি শুনে তিনি তাঁকে সিরিয়ায় তাঁর কাফেলা নিয়ে যেতে প্রস্তাব দেন। সফর থেকে ফিরে এলে তাঁর সততা ও দক্ষতায় মুগ্ধ হয়ে তিনি বিবাহের প্রস্তাব পাঠান; আবু তালিব ও পরিবারের উপস্থিতিতে বিবাহ সম্পন্ন হয়।{ish|খাদিজা (রা.)-এর সঙ্গে বিবাহ}",en:"Hearing of his honesty, she proposed that he take her caravan to Syria. When he returned, impressed by his integrity and skill, she sent a marriage proposal; the marriage took place in the presence of Abu Talib and the family.{ish|Marriage to Khadija (r.a.)}"},
+   {t:"p",bn:"এই বিবাহে ছয় সন্তান জন্মায়: দুই পুত্র (কাসিম ও আবদুল্লাহ) শৈশবেই ইন্তেকাল করেন; চার কন্যা — যয়নব, রুকাইয়া, উম্মে কুলসুম ও ফাতিমা (রা.)।{sad|নবী ﷺ-এর সন্তানগণ}",en:"Six children were born of this marriage: two sons (Qasim and Abdullah) who died in infancy, and four daughters — Zaynab, Ruqayya, Umm Kulthum and Fatima (r.a.).{sad|Children of the Prophet ﷺ}"},
+   {t:"p",bn:"খাদিজা (রা.) আজীবন নবী ﷺ-এর পাশে ছিলেন এবং প্রথম ঈমান-আনয়নকারীদের একজন হিসেবে পরিচিত — এটি পরের আর্টিকেলে আসবে।{ish|প্রথম ঈমান-আনয়নকারীগণ}",en:"Khadija (r.a.) stayed at his side throughout her life and is known as one of the first believers — this comes in the next article.{ish|The first believers}"},
+   {t:"map"}
+  ]},
+
+  {id:"kaaba",h:{bn:"কাবার পুনর্নির্মাণ",en:"Rebuilding the Kaaba"},blocks:[
+   {t:"p",bn:"নবুয়তের কয়েক বছর আগে কাবা-ঘর জীর্ণ হয়ে পড়ে এবং বন্যার ক্ষতির ঝুঁকিতে ছিল; কুরাইশরা তা নতুন করে নির্মাণের সিদ্ধান্ত নেয়।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}",en:"A few years before prophethood the Kaaba had become worn and was exposed to flood damage; the Quraysh decided to rebuild it.{ish|Rebuilding of the Kaaba and the Black Stone settlement}"},
+   {t:"p",bn:"নির্মাণ প্রায় শেষ হলে হাজারে আসওয়াদ যথাস্থানে কে বসাবে তা নিয়ে গোত্রগুলোর মধ্যে তীব্র বিরোধ হয়। শেষে ঠিক হয়, পরদিন সকালে যে প্রথম প্রবেশ করবে সে-ই মীমাংসা করবে; প্রবেশকারী ছিলেন মুহাম্মদ ﷺ।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}",en:"When the walls were nearly done, the clans fell into sharp dispute over who would set the Black Stone in place. It was agreed that the first person to enter the next morning would decide; the one who entered was Muhammad ﷺ.{ish|Rebuilding of the Kaaba and the Black Stone settlement}"},
+   {t:"p",bn:"বর্ণনা অনুযায়ী তিনি একটি চাদর বিছিয়ে তাতে পাথরটি রাখেন এবং প্রতিটি গোত্রের প্রতিনিধিকে চাদরের কিনারা ধরে তুলতে বলেন; পরে নিজ হাতে পাথরটি যথাস্থানে স্থাপন করেন। এভাবে রক্তপাত এড়ানো যায়।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}{lings|Muhammad, কাবা পুনর্নির্মাণ}",en:"As reported, he spread a cloak, placed the stone on it and asked a representative of each clan to hold an edge and lift; he then set the stone in place with his own hands. Bloodshed was thus avoided.{ish|Rebuilding of the Kaaba and the Black Stone settlement}{lings|Muhammad, rebuilding of the Kaaba}"},
+   {t:"p",bn:"সম্পদের অভাবে কুরাইশরা কাবার একটি অংশ (হিজর) ভেতরে না এনে বাইরে রেখে দেয় বলে বর্ণিত।{ish|কাবা পুনর্নির্মাণ ও হাজারে আসওয়াদের মীমাংসা}",en:"For lack of funds the Quraysh are reported to have left a part (the Hijr) outside the rebuilt walls.{ish|Rebuilding of the Kaaba and the Black Stone settlement}"},
+   {t:"fig",bn:"এখানে কাবা বা মাসজিদুল হারামের যাচাই-করা Wikimedia Commons ছবি (লাইসেন্স ও ক্রেডিটসহ) বসবে। নবী ﷺ বা সাহাবিদের কোনো চিত্র ব্যবহার করা হবে না।",en:"A verified Wikimedia Commons photograph of the Kaaba or al-Masjid al-Haram (with licence and credit) will go here. No depiction of the Prophet ﷺ or the Companions is used."}
+  ]},
+
+  {id:"timeline",h:{bn:"ঘটনাপঞ্জি",en:"Timeline"},blocks:[{t:"tl"}]},
+
+  {id:"people",h:{bn:"প্রধান ব্যক্তিগণ",en:"Key Figures"},blocks:[
+   {t:"people",rows:[
+    {c:"#0f5a4a",n:{bn:"খাদিজা বিনতে খুওয়াইলিদ (রা.)",en:"Khadija bint Khuwaylid (r.a.)"},r:{bn:"নবী ﷺ-এর প্রথম স্ত্রী; ধনী ব্যবসায়ী",en:"First wife of the Prophet ﷺ; wealthy merchant"}},
+    {c:"#0f5a4a",n:{bn:"আবু তালিব",en:"Abu Talib"},r:{bn:"চাচা ও অভিভাবক; বিবাহে উপস্থিত",en:"Uncle and guardian; present at the marriage"}},
+    {c:"#0f5a4a",n:{bn:"আবদুল্লাহ ইবনে জুদআন",en:"Abdullah ibn Jud'an"},r:{bn:"যার ঘরে হিলফুল ফুজুল সম্পাদিত হয়",en:"In whose house the Hilf al-Fudul was concluded"}},
+    {c:"#b8892b",n:{bn:"মাইসারা",en:"Maysara"},r:{bn:"খাদিজা (রা.)-এর সহকারী; সিরিয়া-সফরে সঙ্গী বলে বর্ণিত",en:"Khadija's (r.a.) servant; reported as companion on the Syria journey"}}
+   ]}
+  ]},
+
+  {id:"significance",h:{bn:"তাৎপর্য",en:"Significance"},blocks:[
+   {t:"p",bn:"এই পর্ব দেখায় যে ওহী আসার আগেই নবী ﷺ মক্কার সমাজে বিশ্বস্ত ও সালিশকারী হিসেবে স্বীকৃত ছিলেন; পরের দাওয়াতি জীবনে খাদিজা (রা.)-এর সমর্থন ও আবু তালিবের আশ্রয় এর সঙ্গে সম্পর্কিত।{watt|Muhammad at Mecca, নবুয়তের আগের জীবন}{ei2|'Muhammad' এন্ট্রি}",en:"This period shows that before revelation the Prophet ﷺ was already recognised in Meccan society as trustworthy and as an arbiter; the later support of Khadija (r.a.) and the protection of Abu Talib are connected to this.{watt|Muhammad at Mecca, life before prophethood}{ei2|Entry 'Muhammad'}"},
+   {t:"p",bn:"পরবর্তী আর্টিকেল: ওহী ও গোপন দাওয়াত।",en:"Next article: Revelation and the Secret Call."}
+  ]},
+
+  {id:"variants",h:{bn:"সূত্রভেদ ও মতপার্থক্য",en:"Variant Reports and Debates"},blocks:[
+   {t:"var",h:{bn:"খাদিজা (রা.)-এর বয়স:",en:"Khadija's (r.a.) age:"},bn:"বিবাহের সময় তাঁর বয়স ৪০ বছর বলে বহুল প্রচলিত; কোনো কোনো বর্ণনায় ২৮ বা অন্য বয়সের উল্লেখ আছে।",en:"Her age at the marriage is widely given as 40; some reports give 28 or other ages."},
+   {t:"var",h:{bn:"বিবাহের সময়:",en:"Date of marriage:"},bn:"নবী ﷺ-এর বয়স আনু. ২৫ বছর ধরা হয়; তাই আনু. ৫৯৫ খ্রি.। আধুনিক হিসাবে বছরটি আনুমানিক।",en:"The Prophet's ﷺ age is taken as about 25, hence c. 595 CE; the year is approximate in modern reckoning."},
+   {t:"var",h:{bn:"সন্তানদের বিবরণ:",en:"Details of the children:"},bn:"পুত্রদের নাম ও সংখ্যা এবং কন্যাদের জন্মক্রম নিয়ে সূত্রভেদ আছে।",en:"Sources differ on the names and number of sons and on the birth order of the daughters."},
+   {t:"var",h:{bn:"কাবা পুনর্নির্মাণের সময়:",en:"Time of the rebuilding:"},bn:"সাধারণত নবী ﷺ-এর বয়স আনু. ৩৫ ধরা হয় (আনু. ৬০৫ খ্রি.); কোনো বর্ণনায় ভিন্ন বয়স আছে। কাবার পাথর বসানোর খুঁটিনাটি বর্ণনায় সূত্রভেদ আছে।",en:"His age is usually given as about 35 (c. 605 CE); some reports differ. Details of the Black Stone episode vary between sources."},
+   {t:"var",h:{bn:"সূত্রের প্রকৃতি:",en:"Nature of the sources:"},bn:"ইবনে ইসহাক–ইবনে হিশাম ও ইবনে সা'দ পরবর্তী যুগে সংকলিত; সমসাময়িক লিখিত সূত্র নেই।",en:"Ibn Ishaq–Ibn Hisham and Ibn Sa'd were compiled later; there are no contemporary written sources."},
+   {t:"note",bn:"তারিখ ও সংখ্যাগুলো সাধারণ সারসংক্ষেপ-ভিত্তিক; নির্দিষ্ট সংস্করণের সাথে মিলিয়ে চূড়ান্ত করা হবে। বুসরার স্থানাঙ্ক আনুমানিক।",en:"Dates and figures follow general summaries and will be finalised against specific editions. Busra's coordinates are approximate."}
+  ]}
+ ]
+};
+render();
+</script>
+</body>
+</html>
