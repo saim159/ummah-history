@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>সীরাতুন্নবী ও মদিনা রাষ্ট্র — Ummah Chronicles</title>
+<meta name="description" content="Seerah of the Prophet ﷺ and the Medina state (570–632 CE): hub page with timeline, maps, article index, key figures, Qur'anic references and sources.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+<style>
+.al{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin:14px 0 22px}
+.ac{display:block;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:12px;padding:12px 16px;text-decoration:none;color:var(--ink)}
+a.ac:hover{box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.ac .no{font-size:.75rem;color:var(--mute)}
+.ac h4{font-size:1rem;margin:2px 0}
+.ac small{display:block;color:var(--mute);font-size:.8rem}
+.ac .st{display:inline-block;font-size:.7rem;border-radius:10px;padding:1px 10px;margin-top:6px;color:#fff;background:var(--green)}
+.ac.soon{opacity:.8}.ac.soon .st{background:var(--mute)}
+.qt{width:100%;border-collapse:collapse;font-size:.9rem;margin:12px 0}
+.qt td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.qt td:first-child{white-space:nowrap;color:var(--gold);font-weight:600}
+.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:12px 0}
+.gl div{background:var(--card);border-left:4px solid var(--gold);border-radius:8px;padding:10px 14px;font-size:.9rem}
+h3.sh{font-size:1.1rem;color:var(--gold);margin:18px 0 4px}
+</style>
+</head>
+<body data-lang="bn">
+<div id="prog"></div>
+<div id="app"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+if(store.get("theme"))document.documentElement.dataset.theme=store.get("theme");
+let lang=store.get("lang")||"bn";
+const $=s=>document.querySelector(s);
+const O=(bn,en)=>({bn,en});
+const L=o=>o[lang]||o.en;
+
+/* ===== সূত্র তালিকা ===== */
+const SRCS=[
+ ["quran",O("আল-কুরআনুল কারীম","The Qur'an"),O("সীরাতের প্রাথমিক ও সর্বোচ্চ মর্যাদার সূত্র; সূরা ও আয়াত নম্বরসহ উদ্ধৃত।","Primary scripture; cited by sura and verse.")],
+ ["primary",O("বুখারি ও মুসলিম, সহিহাইন","al-Bukhari and Muslim, the two Sahihs"),O("কিতাবুল মাগাযি ও সংশ্লিষ্ট অধ্যায়ের সনদভিত্তিক হাদিস।","Chain-based hadith, esp. Kitab al-Maghazi and related chapters.")],
+ ["primary",O("ইবনে ইসহাক–ইবনে হিশাম, আস-সীরাতুন নববিয়্যাহ","Ibn Ishaq–Ibn Hisham, al-Sira al-Nabawiyya"),O("প্রাচীনতম পূর্ণাঙ্গ সীরাত (ইবনে হিশামের সম্পাদনায়)। ইংরেজি অনুবাদ: A. Guillaume, The Life of Muhammad (Oxford, 1955)।","The earliest full biography, in Ibn Hisham's recension. English: A. Guillaume, The Life of Muhammad (Oxford, 1955).")],
+ ["primary",O("ইবনে সা'দ, আত-তাবাকাতুল কুবরা","Ibn Sa'd, al-Tabaqat al-Kubra"),O("নবী ﷺ ও সাহাবিদের জীবনী-সংকলন।","Biographical compendium of the Prophet ﷺ and the Companions.")],
+ ["primary",O("আল-ওয়াকিদি, কিতাবুল মাগাযি","al-Waqidi, Kitab al-Maghazi"),O("যুদ্ধাভিযানের বিস্তারিত বিবরণ; হাদিস-বর্ণনায় দুর্বল বিবেচিত, তাই সতর্কতার সঙ্গে ব্যবহৃত।","Detailed campaign narratives; regarded as weak in hadith, hence used with caution.")],
+ ["primary",O("আত-তাবারি, তারিখুর রুসুল ওয়াল মুলুক","al-Tabari, Tarikh al-Rusul wa'l-Muluk"),O("বর্ষ-অনুক্রমিক ইতিহাস; বহু সূত্রের বর্ণনা পাশাপাশি রাখে।","Annalistic history placing many narrations side by side.")],
+ ["primary",O("ইবনে কাসির, আল-বিদায়া ওয়ান নিহায়া ও আস-সীরাতুন নববিয়্যাহ","Ibn Kathir, al-Bidaya wa'l-Nihaya and al-Sira al-Nabawiyya"),O("পরবর্তী যুগের সংকলন; সনদ-বিচারসহ বর্ণনা।","A later compilation with attention to chains of transmission.")],
+ ["primary",O("ইবনে সাইয়্যিদিন নাস, উয়ূনুল আসার","Ibn Sayyid al-Nas, 'Uyun al-Athar"),O("সীরাতের সংক্ষিপ্ত অথচ সূত্রসমৃদ্ধ সংকলন।","A concise but source-rich Sira compendium.")],
+ ["primary",O("আস-সালিহি আশ-শামি, সুবুলুল হুদা ওয়ার রাশাদ","al-Salihi al-Shami, Subul al-Huda wa'l-Rashad"),O("সীরাতের বিশাল বিশ্বকোষীয় সংকলন।","A vast encyclopaedic Sira compilation.")],
+ ["secondary",O("সফিউর রহমান আল-মুবারকপুরি, আর-রাহিকুল মাখতুম","Safi al-Rahman al-Mubarakpuri, al-Raheeq al-Makhtum"),O("আধুনিক জনপ্রিয় সীরাত-গ্রন্থ।","A popular modern biography.")],
+ ["secondary",O("মুহাম্মদ হামিদুল্লাহ, The First Written Constitution in the World (লাহোর, ১৯৪১)","Muhammad Hamidullah, The First Written Constitution in the World (Lahore, 1941)"),O("মদিনার সনদ বিষয়ে প্রাথমিক আধুনিক আলোচনা।","An early modern study of the Charter of Medina.")],
+ ["secondary",O("R. B. Serjeant, 'The Sunnah Jami'ah, Pacts with the Yathrib Jews…', BSOAS 41 (1978)","R. B. Serjeant, 'The Sunnah Jami'ah, Pacts with the Yathrib Jews…', BSOAS 41 (1978)"),O("মদিনার সনদের পাঠ-বিশ্লেষণ ও ব্যাখ্যা।","Textual analysis and interpretation of the Charter of Medina.")],
+ ["secondary",O("W. Montgomery Watt, Muhammad at Mecca (১৯৫৩) ও Muhammad at Medina (১৯৫৬)","W. Montgomery Watt, Muhammad at Mecca (1953) and Muhammad at Medina (1956)"),O("অ-মুসলিম একাডেমিক দৃষ্টিকোণের প্রভাবশালী গবেষণা।","Influential academic studies from a non-Muslim scholarly perspective.")],
+ ["secondary",O("Martin Lings, Muhammad: His Life Based on the Earliest Sources (১৯৮৩)","Martin Lings, Muhammad: His Life Based on the Earliest Sources (1983)"),O("আদি সূত্রনির্ভর আখ্যানধর্মী জীবনী।","A narrative biography based on early sources.")],
+ ["secondary",O("মাওলানা ইসমাইল রেহান, মুসলিম উম্মাহর ইতিহাস, খণ্ড ২–৩ (আল ইত্তেহাদ প্রকাশনী, বাংলা)","Maulana Ismail Rehan, Muslim Ummah's History, vols. 2–3 (Bengali)"),O("এই সাইটের কাঠামোর ভিত্তিগ্রন্থ; সংস্করণ ও পৃষ্ঠা যাচাই বাকি।","The base text for this site's structure; edition and pages to be verified.")],
+ ["reference",O("Encyclopaedia of Islam, 2nd ed. — 'Muhammad', 'Hidjra', 'Badr', 'Uhud' ইত্যাদি এন্ট্রি","Encyclopaedia of Islam, 2nd ed. — entries 'Muhammad', 'Hidjra', 'Badr', 'Uhud' etc."),O("গবেষণামূলক রেফারেন্স।","Scholarly reference work.")],
+ ["site",O("Encyclopaedia Britannica — 'Muhammad', 'Battle of Badr' ইত্যাদি","Encyclopaedia Britannica — 'Muhammad', 'Battle of Badr' etc."),O("সাধারণ রেফারেন্স; তারিখ ও সারসংক্ষেপ মিলিয়ে দেখার জন্য।","General reference for cross-checking dates and summaries.")]
+];
+const TYPE={quran:O("কুরআন","Qur'an"),primary:O("প্রাথমিক","Primary"),secondary:O("আধুনিক","Modern"),reference:O("রেফারেন্স","Reference"),site:O("বিশ্বকোষ","Encyclopaedia")};
+
+/* ===== আর্টিকেল সূচি (file: আপলোড হলে ফাইলের নাম বসান) ===== */
+const MAKKI=[
+ ["seerah-birth.html",O("বংশ, জন্ম ও শৈশব","Lineage, Birth and Childhood"),O("আনু. ৫৭০ – ৫৭৬ খ্রি.","c. 570–576 CE")],
+ [null,O("যৌবন, খাদিজা (রা.), হিলফুল ফুজুল ও কাবা পুনর্নির্মাণ","Youth, Khadija (r.a.), Hilf al-Fudul and Rebuilding the Kaaba"),O("আনু. ৫৯০ – ৬০৫ খ্রি.","c. 590–605 CE")],
+ [null,O("ওহী ও গোপন দাওয়াত","Revelation and the Secret Call"),O("আনু. ৬১০ – ৬১৩ খ্রি.","c. 610–613 CE")],
+ [null,O("প্রকাশ্য দাওয়াত, নির্যাতন ও হাবশায় হিজরত","Public Call, Persecution and the Migration to Abyssinia"),O("আনু. ৬১৩ – ৬১৫ খ্রি.","c. 613–615 CE")],
+ [null,O("হামযা ও উমরের ইসলাম গ্রহণ; বয়কট","Conversion of Hamza and Umar; the Boycott"),O("আনু. ৬১৫ – ৬১৯ খ্রি.","c. 615–619 CE")],
+ [null,O("দুঃখের বছর, তায়েফ ও ইসরা–মিরাজ","Year of Sorrow, Ta'if and al-Isra wa'l-Mi'raj"),O("আনু. ৬১৯ – ৬২০ খ্রি.","c. 619–620 CE")],
+ [null,O("আকাবার বায়াত","The Pledges of al-Aqaba"),O("আনু. ৬২০ – ৬২২ খ্রি.","c. 620–622 CE")]
+];
+const MADANI=[
+ [null,O("হিজরত","The Hijra"),O("৬২২ খ্রি. · ১ হি.","622 CE · 1 AH")],
+ [null,O("মদিনার সনদ ও মুআখাত (ভ্রাতৃত্ব)","Charter of Medina and the Mu'akhat"),O("১ হি.","1 AH")],
+ [null,O("প্রাথমিক অভিযান ও সারিয়্যাহ","Early Expeditions and Sariyyas"),O("১–২ হি.","1–2 AH")],
+ ["badr.html",O("বদরের যুদ্ধ","The Battle of Badr"),O("৬২৪ খ্রি. · ২ হি.","624 CE · 2 AH")],
+ [null,O("উহুদের যুদ্ধ","The Battle of Uhud"),O("৬২৫ খ্রি. · ৩ হি.","625 CE · 3 AH")],
+ [null,O("খন্দক, বনু কুরাইযা ও বনু নাযির","Khandaq, Banu Qurayza and Banu al-Nadir"),O("৪–৫ হি.","4–5 AH")],
+ [null,O("হুদায়বিয়ার সন্ধি","The Treaty of Hudaybiyya"),O("৬২৮ খ্রি. · ৬ হি.","628 CE · 6 AH")],
+ [null,O("খায়বার","Khaybar"),O("৭ হি.","7 AH")],
+ [null,O("দাওয়াতি চিঠিপত্র","The Letters to Rulers"),O("৬–৭ হি.","6–7 AH")],
+ [null,O("মক্কা বিজয়","The Conquest of Mecca"),O("৬৩০ খ্রি. · ৮ হি.","630 CE · 8 AH")],
+ [null,O("হুনাইন ও তাবুক","Hunayn and Tabuk"),O("৮–৯ হি.","8–9 AH")],
+ [null,O("বিদায় হজ্জ","The Farewell Pilgrimage"),O("৬৩২ খ্রি. · ১০ হি.","632 CE · 10 AH")],
+ [null,O("শেষ দিনগুলো ও ওফাত","The Last Days and Passing"),O("৬৩২ খ্রি. · ১১ হি.","632 CE · 11 AH")]
+];
+const artCard=(a,i,c)=>{const t=`<span class="no">${lang==="bn"?"আর্টিকেল":"Article"} ${i}</span><h4>${L(a[1])}</h4><small>${L(a[2])}</small><span class="st">${a[0]?(lang==="bn"?"প্রকাশিত":"Published"):(lang==="bn"?"শীঘ্রই আসছে":"Coming soon")}</span>`;return a[0]?`<a class="ac" style="--c:${c}" href="${a[0]}">${t}</a>`:`<div class="ac soon" style="--c:${c}">${t}</div>`};
+
+/* ===== ঘটনাপঞ্জি ===== */
+const TL=[
+ [O("আনু. ৫৭০ খ্রি.","c. 570 CE"),O("নবী ﷺ-এর জন্ম, মক্কা।","Birth of the Prophet ﷺ in Mecca.")],
+ [O("আনু. ৫৯৫ খ্রি.","c. 595 CE"),O("খাদিজা (রা.)-এর সঙ্গে বিবাহ (আনুমানিক)।","Marriage to Khadija (r.a.) (approximate).")],
+ [O("আনু. ৬০৫ খ্রি.","c. 605 CE"),O("কাবার পুনর্নির্মাণ (আনুমানিক)।","Rebuilding of the Kaaba (approximate).")],
+ [O("আনু. ৬১০ খ্রি.","c. 610 CE"),O("প্রথম ওহী — হেরা গুহা।","First revelation — Cave of Hira.")],
+ [O("আনু. ৬১৩ খ্রি.","c. 613 CE"),O("প্রকাশ্য দাওয়াতের সূচনা।","Beginning of the public call.")],
+ [O("আনু. ৬১৫ খ্রি.","c. 615 CE"),O("হাবশায় (আবিসিনিয়া) হিজরত।","Migration to Abyssinia.")],
+ [O("আনু. ৬১৯ খ্রি.","c. 619 CE"),O("দুঃখের বছর — খাদিজা (রা.) ও আবু তালিবের ইন্তেকাল।","Year of Sorrow — deaths of Khadija (r.a.) and Abu Talib.")],
+ [O("৬২২ খ্রি. (১ হি.)","622 CE (1 AH)"),O("মদিনায় হিজরত; হিজরি সনের সূচনা-বিন্দু।","The Hijra to Medina; the epoch of the Hijri calendar.")],
+ [O("৬২৪ খ্রি. (২ হি.)","624 CE (2 AH)"),O("বদরের যুদ্ধ।","Battle of Badr.")],
+ [O("৬২৫ খ্রি. (৩ হি.)","625 CE (3 AH)"),O("উহুদের যুদ্ধ।","Battle of Uhud.")],
+ [O("৬২৭ খ্রি. (৫ হি.)","627 CE (5 AH)"),O("খন্দকের যুদ্ধ।","Battle of the Trench (Khandaq).")],
+ [O("৬২৮ খ্রি. (৬ হি.)","628 CE (6 AH)"),O("হুদায়বিয়ার সন্ধি।","Treaty of Hudaybiyya.")],
+ [O("৬২৮–২৯ খ্রি. (৭ হি.)","628–29 CE (7 AH)"),O("খায়বার অভিযান।","The Khaybar campaign.")],
+ [O("৬৩০ খ্রি. (৮ হি.)","630 CE (8 AH)"),O("মক্কা বিজয় ও হুনাইনের যুদ্ধ।","Conquest of Mecca and the Battle of Hunayn.")],
+ [O("৬৩০–৩১ খ্রি. (৯ হি.)","630–31 CE (9 AH)"),O("তাবুক অভিযান।","The Tabuk expedition.")],
+ [O("৬৩২ খ্রি. (১০ হি.)","632 CE (10 AH)"),O("বিদায় হজ্জ।","The Farewell Pilgrimage.")],
+ [O("৬৩২ খ্রি. (১১ হি.)","632 CE (11 AH)"),O("নবী ﷺ-এর ওফাত, মদিনা।","Passing of the Prophet ﷺ in Medina.")]
+];
+
+/* ===== ব্যক্তিগণ ===== */
+const PPL=[
+ ["#0f5a4a",O("খাদিজা বিনতে খুওয়াইলিদ (রা.)","Khadija bint Khuwaylid (r.a.)"),O("নবী ﷺ-এর প্রথম স্ত্রী; প্রথম ঈমান-আনয়নকারীদের একজন","First wife of the Prophet ﷺ; among the first believers")],
+ ["#0f5a4a",O("আবু তালিব","Abu Talib"),O("চাচা ও অভিভাবক; মক্কায় আশ্রয়দাতা","Uncle and guardian; protector in Mecca")],
+ ["#0f5a4a",O("আবু বকর সিদ্দিক (রা.)","Abu Bakr al-Siddiq (r.a.)"),O("ঘনিষ্ঠ সঙ্গী; হিজরতের সফরসঙ্গী","Close companion; travelling companion on the Hijra")],
+ ["#0f5a4a",O("উমর ইবনুল খাত্তাব (রা.)","Umar ibn al-Khattab (r.a.)"),O("প্রখ্যাত সাহাবি; পরবর্তী খলিফা","Prominent Companion; later caliph")],
+ ["#0f5a4a",O("হামযা ইবনে আবদুল মুত্তালিব (রা.)","Hamza ibn Abd al-Muttalib (r.a.)"),O("চাচা; উহুদে শহিদ","Uncle; martyred at Uhud")],
+ ["#0f5a4a",O("আলী ইবনে আবি তালিব (রা.)","Ali ibn Abi Talib (r.a.)"),O("নবী ﷺ-এর চাচাতো ভাই ও জামাতা","Cousin and son-in-law of the Prophet ﷺ")],
+ ["#0f5a4a",O("বিলাল ইবনে রাবাহ (রা.)","Bilal ibn Rabah (r.a.)"),O("প্রথম দিকের মুসলিম; ইসলামের প্রথম মুআযযিন","Early Muslim; first muezzin of Islam")],
+ ["#2f4f8a",O("সা'দ ইবনে মুআজ (রা.)","Sa'd ibn Mu'adh (r.a.)"),O("আউস গোত্রের নেতা, আনসার","Leader of the Aws, one of the Ansar")],
+ ["#2f4f8a",O("মুসআব ইবনে উমাইর (রা.)","Mus'ab ibn Umayr (r.a.)"),O("মদিনায় প্রেরিত প্রথম দিকের দাঈ","Early envoy sent to teach in Medina")],
+ ["#8a2b3a",O("আবু জাহল (আমর ইবনে হিশাম)","Abu Jahl (Amr ibn Hisham)"),O("কুরাইশ নেতা; বদরে নিহত","Quraysh leader; killed at Badr")],
+ ["#8a2b3a",O("আবু লাহাব","Abu Lahab"),O("চাচা ও প্রকাশ্য বিরোধী; সূরা লাহাব (১১১)","Uncle and open opponent; Sura al-Masad (111)")],
+ ["#8a2b3a",O("আবু সুফিয়ান ইবনে হারব","Abu Sufyan ibn Harb"),O("কুরাইশ নেতা; পরে মক্কা বিজয়ের সময় ইসলাম গ্রহণ","Quraysh leader; accepted Islam at the Conquest of Mecca")]
+];
+
+/* ===== কুরআনে সীরাত (সাধারণ সংযোগ; আর্টিকেলে আয়াত-নম্বর যাচাই করা হবে) ===== */
+const QR=[
+ ["১০৫, ১০৬",O("সূরা ফীল ও কুরাইশ — হাতির বছর ও কুরাইশের বাণিজ্য","Suras al-Fil and Quraysh — the Elephant year and Quraysh trade")],
+ ["৯৬:১–৫",O("প্রথম ওহী — 'ইকরা'","First revelation — 'Iqra'")],
+ ["৯৩",O("সূরা দুহা — এতিম অবস্থার স্মরণ ও সান্ত্বনা","Sura al-Duha — recalling orphanhood and consolation")],
+ ["১৭:১",O("ইসরা (রাত্রিকালীন সফর)","al-Isra (the night journey)")],
+ ["৮, ৩:১২৩",O("বদর","Badr")],
+ ["৩ (প্রধানত ১২১–১৭৯)",O("উহুদের প্রেক্ষাপট","Context of Uhud")],
+ ["৩৩ (প্রধানত ৯–২৭)",O("সূরা আহযাব — খন্দক ও বনু কুরাইযা","Sura al-Ahzab — Khandaq and Banu Qurayza")],
+ ["৪৮",O("সূরা ফাতহ — হুদায়বিয়ার প্রেক্ষাপটে","Sura al-Fath — in the context of Hudaybiyya")],
+ ["১১০",O("সূরা নাসর — বিজয় ও মানুষের দলে দলে প্রবেশ","Sura al-Nasr — victory and people entering in droves")],
+ ["৯",O("সূরা তাওবা — তাবুক ও সমকালীন বিধান","Sura al-Tawba — Tabuk and contemporary rulings")],
+ ["৫:৩",O("বিদায় হজ্জের সময় অবতীর্ণ বলে প্রচলিত","Commonly held to have been revealed during the Farewell Pilgrimage")]
+];
+
+const GL=[
+ [O("সীরাহ","Sira"),O("নবী ﷺ-এর জীবনী-সাহিত্য।","Biographical literature on the Prophet ﷺ.")],
+ [O("মাগাযি","Maghazi"),O("নবী ﷺ-এর যুদ্ধাভিযান-বিষয়ক রচনা।","Writings on the Prophet's ﷺ campaigns.")],
+ [O("গাযওয়াহ","Ghazwa"),O("যে অভিযানে নবী ﷺ স্বয়ং অংশ নেন।","A campaign the Prophet ﷺ personally joined.")],
+ [O("সারিয়্যাহ","Sariyya"),O("নবী ﷺ-এর প্রেরিত, কিন্তু তাঁর অনুপস্থিত অভিযান।","A campaign dispatched by the Prophet ﷺ in his absence.")],
+ [O("হিজরত","Hijra"),O("মক্কা থেকে মদিনায় প্রস্থান (৬২২ খ্রি.)।","The move from Mecca to Medina (622 CE).")],
+ [O("মুহাজির / আনসার","Muhajirun / Ansar"),O("মক্কা থেকে আগতরা / মদিনার সহায়তাকারীরা।","Those who came from Mecca / the helpers of Medina.")],
+ [O("বায়াত","Bay'a"),O("আনুগত্য ও অঙ্গীকারের শপথ।","A pledge of allegiance.")],
+ [O("মুআখাত","Mu'akhat"),O("মুহাজির-আনসার ভ্রাতৃত্ব-বন্ধন।","The brotherhood bond between Muhajirun and Ansar.")],
+ [O("সনদ (ইসনাদ)","Isnad"),O("হাদিস-বর্ণনাকারীদের ধারা।","The chain of narrators of a report.")],
+ [O("সহিহ / দ'ঈফ","Sahih / Da'if"),O("হাদিসের নির্ভরযোগ্য / দুর্বল স্তর।","Authentic / weak grades of hadith.")]
+];
+
+const UI={
+ bn:{nav:"আর্টিকেল সূচি",tocT:"এই পৃষ্ঠায়",home:"হোম",print:"প্রিন্ট",
+  h1:"সীরাতুন্নবী ও মদিনা রাষ্ট্র",ar:"السيرة النبوية",sub:"নবী মুহাম্মদ ﷺ-এর জীবন ও মদিনা রাষ্ট্র — আনু. ৫৭০ থেকে ৬৩২ খ্রিষ্টাব্দ। খণ্ড ২–৩।",
+  b1:"ক্যাটাগরি ২",b2:"২০টি আর্টিকেল",b3:"মাক্কী ৭ · মাদানী ১৩",
+  s_over:"ভূমিকা",s_glance:"সীরাত এক নজরে",s_tl:"৫৭০–৬৩২ ঘটনাপঞ্জি",s_map:"মানচিত্র",s_art:"আর্টিকেল সূচি",s_ppl:"প্রধান ব্যক্তিগণ",s_qr:"কুরআনে সীরাত",s_gl:"পরিভাষা",s_note:"পদ্ধতি ও সতর্কতা",s_src:"সূত্রগ্রন্থ",
+  mk:"মাক্কী জীবন (৭টি)",md:"মাদানী জীবন (১৩টি)",
+  over:["সীরাত (السيرة) শব্দের অর্থ জীবনপথ; পরিভাষায় নবী মুহাম্মদ ﷺ-এর জীবনী। এই সেকশনে তাঁর জন্ম থেকে ওফাত পর্যন্ত মাক্কী ও মাদানী জীবন এবং মদিনা রাষ্ট্রের গঠন ধাপে ধাপে আলোচিত হবে।","প্রতিটি আর্টিকেল একই কাঠামোয় লেখা: তথ্যছক, মানচিত্র, ঘটনাপঞ্জি, প্রধান ব্যক্তিগণ, ফুটনোটসহ বিবরণ এবং 'সূত্রভেদ ও মতপার্থক্য'।","নবী ﷺ ও সাহাবিদের কোনো কাল্পনিক ছবি এই সাইটে ব্যবহার করা হয় না। ভিজ্যুয়াল বলতে মানচিত্র, নকশা, ঘটনাপঞ্জি, ইনফোগ্রাফিক এবং স্থানের (হেরা, উহুদ, মাসজিদে নববী প্রভৃতি) যাচাই-করা Wikimedia Commons ছবি বোঝানো হয়েছে।"],
+  gl_items:[["৫৭০–৬৩২","খ্রিষ্টাব্দ (আনুমানিক ৬২ বছর)"],["২০","পরিকল্পিত আর্টিকেল"],["১০","হিজরি বছরে মাদানী জীবন (১–১১ হি.)"],["৭","মাক্কী পর্বের আর্টিকেল"]],
+  mapcap:"মানচিত্র: মক্কা, মদিনা ও প্রধান অভিযানস্থল। রেখা সরলীকৃত চিত্র মাত্র, প্রকৃত পথ নয়; মার্কারের স্থানাঙ্ক আনুমানিক এবং আর্টিকেলে যাচাই করে সংশোধন করা হবে।",
+  notes:["এখানে প্রতিটি তারিখ প্রচলিত বর্ণনা অনুযায়ী আনুমানিক; কোথাও কোথাও ১–২ বছরের মতভেদ আছে, যা প্রতিটি আর্টিকেলের 'সূত্রভেদ ও মতপার্থক্য' বক্সে থাকবে।","বনু কুরাইযা, বনু নাযিরসহ সংবেদনশীল অধ্যায়ে একাধিক সূত্র পাশাপাশি দেওয়া হবে এবং সূত্রের শক্তি-দুর্বলতা চিহ্নিত থাকবে।","ইসরা–মিরাজের তারিখ ও প্রকৃতি নিয়ে মতভেদ আছে; আর্টিকেলে সবকটি মত সূত্রসহ থাকবে।","দাওয়াতি চিঠির পরিচিত ছবিগুলো ব্যবহার করা হবে না, কারণ কিছু ছবির সত্যতা নিয়ে বিতর্ক আছে; এর বদলে চিঠির পাঠ ও সূত্রের আলোচনা থাকবে।","সংখ্যা (সৈন্য, হতাহত) সূত্রভেদে ভিন্ন; আমরা প্রচলিত সংখ্যা ও বিকল্প মত আলাদা করে দেখাই।","পৃষ্ঠা-নম্বর যাচাই না হওয়া পর্যন্ত ফুটনোটে 'পৃষ্ঠা: যাচাই বাকি' লেখা থাকবে — কোনো পৃষ্ঠা-নম্বর অনুমানে বসানো হয় না।"],
+  srcnote:"সূত্রের ধরন: নীল = কুরআন, বাদামি = প্রাথমিক, সবুজ = আধুনিক, বেগুনি = রেফারেন্স, লাল = বিশ্বকোষ।"},
+ en:{nav:"Article index",tocT:"On this page",home:"Home",print:"Print",
+  h1:"Seerah of the Prophet ﷺ and the Medina State",ar:"السيرة النبوية",sub:"The life of the Prophet Muhammad ﷺ and the Medina state — c. 570 to 632 CE. Vols. 2–3.",
+  b1:"Category 2",b2:"20 articles",b3:"Meccan 7 · Medinan 13",
+  s_over:"Introduction",s_glance:"Seerah at a Glance",s_tl:"Timeline 570–632",s_map:"Map",s_art:"Article Index",s_ppl:"Key Figures",s_qr:"The Seerah in the Qur'an",s_gl:"Glossary",s_note:"Method and Cautions",s_src:"Sources",
+  mk:"Meccan period (7)",md:"Medinan period (13)",
+  over:["Sira (السيرة) means 'way of life'; as a term it denotes the biography of the Prophet Muhammad ﷺ. This section covers, step by step, his Meccan and Medinan life from birth to death and the formation of the Medina state.","Every article follows one structure: fact box, map, timeline, key figures, a narrative with footnotes, and 'Variant Reports and Debates'.","No imagined depictions of the Prophet ﷺ or the Companions are used on this site. 'Visuals' means maps, plans, timelines, infographics and verified Wikimedia Commons photographs of places (Hira, Uhud, the Prophet's Mosque and so on)."],
+  gl_items:[["570–632","CE (about 62 years)"],["20","planned articles"],["10","years of Medinan life (1–11 AH)"],["7","Meccan-period articles"]],
+  mapcap:"Map: Mecca, Medina and the main campaign sites. Lines are schematic, not actual routes; marker coordinates are approximate and will be refined in the articles.",
+  notes:["All dates here follow the common reckoning and are approximate; where sources differ by a year or two this will appear in each article's 'Variant Reports and Debates' box.","Sensitive chapters such as Banu Qurayza and Banu al-Nadir will set several sources side by side, marking the strength and weakness of each.","The date and nature of al-Isra wa'l-Mi'raj are disputed; the article will give each view with sources.","The well-known images of the letters to rulers will not be used because the authenticity of some is debated; the texts and the source discussion will be given instead.","Numbers (troops, casualties) differ across sources; we show the common figure and the alternatives separately.","Until page numbers are verified, footnotes read 'page: pending verification' — no page number is ever guessed."],
+  srcnote:"Source types: blue = Qur'an, brown = primary, green = modern, purple = reference, red = encyclopaedia."}
+};
+
+/* ===== মানচিত্রের তথ্য (আনুমানিক) ===== */
+const PTS=[
+ [21.4225,39.8262,O("মক্কা","Mecca"),O("জন্মস্থান; ৬২২ সাল পর্যন্ত মাক্কী জীবনের কেন্দ্র।","Birthplace; centre of the Meccan period until 622.")],
+ [24.4672,39.6111,O("মদিনা","Medina"),O("হিজরতের গন্তব্য; মদিনা রাষ্ট্রের কেন্দ্র।","Destination of the Hijra; centre of the Medina state.")],
+ [21.377,39.85,O("সাওর গুহা (আনুমানিক)","Cave of Thawr (approx.)"),O("হিজরতের পথে আশ্রয়।","Refuge on the Hijra journey.")],
+ [24.44,39.617,O("কুবা (আনুমানিক)","Quba (approx.)"),O("মদিনায় প্রবেশের আগের বসতি।","Settlement reached before entering Medina.")],
+ [23.7333,38.7667,O("বদর","Badr"),O("বদরের যুদ্ধ, ২ হি.।","Battle of Badr, 2 AH.")],
+ [24.503,39.612,O("উহুদ (আনুমানিক)","Uhud (approx.)"),O("উহুদের যুদ্ধ, ৩ হি.।","Battle of Uhud, 3 AH.")],
+ [25.70,39.29,O("খায়বার (আনুমানিক)","Khaybar (approx.)"),O("খায়বার অভিযান, ৭ হি.।","Khaybar campaign, 7 AH.")],
+ [21.27,40.416,O("তায়েফ","Ta'if"),O("দাওয়াতের সফর, আনু. ৬১৯ খ্রি.।","Journey of da'wa, c. 619 CE.")],
+ [28.384,36.566,O("তাবুক","Tabuk"),O("তাবুক অভিযান, ৯ হি.।","Tabuk expedition, 9 AH.")]
+];
+const LNS=[
+ {pts:[[21.4225,39.8262],[21.377,39.85],[22.6,39.3],[24.44,39.617],[24.4672,39.6111]],c:"#0f5a4a",n:O("হিজরতের রুট (অত্যন্ত সরলীকৃত)","Hijra route (highly schematic)")}
+];
+
+function render(){
+ const u=UI[lang];document.body.dataset.lang=lang;document.documentElement.lang=lang;
+ const sec=[["over",u.s_over],["glance",u.s_glance],["tl",u.s_tl],["map",u.s_map],["art",u.s_art],["ppl",u.s_ppl],["qr",u.s_qr],["gl",u.s_gl],["note",u.s_note],["src",u.s_src]];
+ $("#app").innerHTML=`
+ <header><div class="nav"><a class="logo" href="index.html">☪ Ummah Chronicles</a>
+  <a class="l" href="index.html">${u.home}</a><a class="l" href="#art">${u.nav}</a>
+  <div class="tools"><select id="lang"><option value="bn">বাংলা</option><option value="en">English</option></select>
+  <button class="t" id="dark">🌙</button><button class="t" id="fminus">A−</button><button class="t" id="fplus">A+</button></div></div></header>
+ <div class="hero"><div class="in"><div class="crumb"><a href="index.html">${u.home}</a> › ${u.b1}</div>
+  <div class="ar">${u.ar}</div><h1>${u.h1}</h1><p>${u.sub}</p>
+  <div class="badges"><span class="bdg">${u.b1}</span><span class="bdg">${u.b2}</span><span class="bdg">${u.b3}</span></div></div></div>
+ <div class="wrap"><nav class="toc"><b>${u.tocT}</b>${sec.map(s=>`<a href="#${s[0]}">${s[1]}</a>`).join("")}<div class="btns"><button class="o" onclick="window.print()">🖨 ${u.print}</button></div></nav>
+ <article>
+  <h2 id="over">${u.s_over}</h2>${u.over.map(p=>`<p>${p}</p>`).join("")}
+  <h2 id="glance">${u.s_glance}</h2>
+  <div class="stats">${u.gl_items.map(s=>`<div class="stat"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("")}</div>
+  <h2 id="tl">${u.s_tl}</h2><div class="tl">${TL.map(e=>`<div><b>${L(e[0])}</b>${L(e[1])}</div>`).join("")}</div>
+  <h2 id="map">${u.s_map}</h2><div id="map"></div><div class="cap">${u.mapcap}</div>
+  <h2 id="art">${u.s_art}</h2>
+  <h3 class="sh">${u.mk}</h3><div class="al">${MAKKI.map((a,i)=>artCard(a,i+1,"#8a5a2b")).join("")}</div>
+  <h3 class="sh">${u.md}</h3><div class="al">${MADANI.map((a,i)=>artCard(a,i+8,"#0f5a4a")).join("")}</div>
+  <h2 id="ppl">${u.s_ppl}</h2><div class="people">${PPL.map(p=>`<div class="pc" style="--c:${p[0]}"><h4>${L(p[1])}</h4><small>${L(p[2])}</small></div>`).join("")}</div>
+  <h2 id="qr">${u.s_qr}</h2><table class="qt">${QR.map(q=>`<tr><td>${q[0]}</td><td>${L(q[1])}</td></tr>`).join("")}</table>
+  <h2 id="gl">${u.s_gl}</h2><div class="gl">${GL.map(g=>`<div><b>${L(g[0])}</b><br>${L(g[1])}</div>`).join("")}</div>
+  <h2 id="note">${u.s_note}</h2>${u.notes.map(n=>`<div class="var">${n}</div>`).join("")}
+  <h2 id="src">${u.s_src}</h2><ul class="bib">${SRCS.map(s=>`<li><span class="tag t-${s[0]}">${L(TYPE[s[0]])}</span>${L(s[1])}<em>${L(s[2])}</em></li>`).join("")}</ul>
+  <div class="note">${u.srcnote}</div>
+ </article></div>
+ <footer>© 2026 Ummah Chronicles</footer>`;
+ $("#lang").value=lang;
+ $("#lang").onchange=e=>{lang=e.target.value;store.set("lang",lang);render()};
+ $("#dark").onclick=()=>{const d=document.documentElement,on=d.dataset.theme==="dark";d.dataset.theme=on?"":"dark";store.set("theme",on?"":"dark")};
+ let fs=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--fs"))||17;
+ $("#fplus").onclick=()=>{fs=Math.min(24,fs+1);document.documentElement.style.setProperty("--fs",fs+"px")};
+ $("#fminus").onclick=()=>{fs=Math.max(13,fs-1);document.documentElement.style.setProperty("--fs",fs+"px")};
+ try{const m=L2.map("map",{scrollWheelZoom:false}).setView([24,38.5],6);
+  L2.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(m);
+  PTS.forEach(p=>L2.marker([p[0],p[1]]).addTo(m).bindPopup(`<b>${L(p[2])}</b><br>${L(p[3])}`));
+  LNS.forEach(l=>L2.polyline(l.pts,{color:l.c,weight:3,dashArray:"6 8"}).addTo(m).bindTooltip(L(l.n)));}catch(e){}
+}
+window.addEventListener("scroll",()=>{const h=document.documentElement;$("#prog").style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%"});
+</script>
+<script>var L2=window.L;</script>
+<script>render();</script>
+</body>
+</html>
