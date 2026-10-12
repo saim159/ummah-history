@@ -210,7 +210,7 @@ function render(){
  document.querySelectorAll("[data-i18n-ph]").forEach(e=>e.placeholder=t[e.dataset.i18nPh]);
  $("#rail").innerHTML=t.eras.map((e,i)=>`<button style="--c:${COL[i]}" class="${i==era?'on':''}" onclick="era=${i};render()">${e[0]}</button>`).join("");
  const e=t.eras[era];
- const ART={1:[["seerah.html","সীরাত সেকশন — সব আর্টিকেল","Seerah section — all articles"],["badr.html","বদরের যুদ্ধ","The Battle of Badr"],["seerah-birth.html","মক্কা, বংশ ও জন্ম","Mecca, Lineage and Birth"]]};
+ const ART={1:[["seerah.html","সীরাত সেকশন — সব আর্টিকেল","Seerah section — all articles"],["badr.html","বদরের যুদ্ধ","The Battle of Badr"],["seerah-birth.html","মক্কা, বংশ ও জন্ম","Mecca, Lineage and Birth"],["seerah-khadija.html","যৌবন, খাদিজা (রা.) ও কাবা পুনর্নির্মাণ","Youth, Khadija (r.a.) and the Rebuilding of the Kaaba"]]};
  const arts=(ART[era]||[]).map(a=>`<a class="btn" style="background:var(--green);color:#fff;margin:4px 6px 0 0;padding:8px 18px;font-size:.9rem" href="${a[0]}">📖 ${lang==="bn"?a[1]:a[2]} →</a>`).join("");
  $("#panel").innerHTML=`<h3>${e[0]}</h3><div class="meta">${e[1]} · ${e[2]}</div><p>${e[3]}</p><div style="margin-top:12px">${e[4].map(x=>`<span class="tag">${x}</span>`).join("")}</div>${arts?`<div style="margin-top:14px"><b style="color:var(--gold)">${lang==="bn"?"এই যুগের আর্টিকেল":"Articles for this era"}</b><br>${arts}</div>`:""}`;
  $("#cards").innerHTML=t.eras.map((e,i)=>`<div class="card" data-s="${(e[0]+e[3]+e[4].join(' ')).toLowerCase()}" style="--c:${COL[i]}"><div class="top">${e[0]}</div><div class="bd"><small>${e[1]} · ${e[2]}</small><p style="margin-top:6px">${e[3]}</p></div></div>`).join("");
