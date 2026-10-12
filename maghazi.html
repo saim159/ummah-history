@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>নবী ﷺ-এর যুদ্ধ ও অভিযান — Ummah Chronicles</title>
+<meta name="description" content="Index of the Prophet's ﷺ campaigns (maghazi and sariyyas): searchable list, map, outcomes and links to articles.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="article.css">
+<style>
+.wrap{display:block;max-width:1200px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.ctl input{flex:1 1 240px;padding:10px 16px;border-radius:24px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 14px;cursor:pointer;font:inherit;font-size:.85rem}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green)}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table.mg{width:100%;border-collapse:collapse;font-size:.9rem;min-width:760px}
+table.mg th{background:var(--bg2);text-align:left;padding:9px 12px;color:var(--gold);font-size:.82rem;position:sticky;top:0}
+table.mg td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+.ty{display:inline-block;font-size:.7rem;border-radius:10px;padding:1px 10px;color:#fff}
+.ty.g{background:#0f5a4a}.ty.s{background:#8a5a2b}
+.lk{display:inline-block;background:var(--green);color:#fff;border-radius:10px;padding:1px 10px;font-size:.75rem;text-decoration:none}
+.cnt{font-size:.85rem;color:var(--mute);margin:6px 0}
+</style>
+</head>
+<body data-lang="bn">
+<div id="prog"></div>
+<div id="app"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+if(store.get("theme"))document.documentElement.dataset.theme=store.get("theme");
+let lang=store.get("lang")||"bn",flt="all",qry="";
+const $=s=>document.querySelector(s);
+const O=(bn,en)=>({bn,en});
+const L=o=>o[lang]||o.en;
+const bnum=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
+const num=n=>lang==="bn"?bnum(n):String(n);
+/* হিজরি সন → আনুমানিক খ্রিষ্টাব্দ */
+const CE={1:"622–23",2:"623–24",3:"624–25",4:"625–26",5:"626–27",6:"627–28",7:"628–29",8:"629–30",9:"630–31",10:"631–32",11:"632–33"};
+
+/* ===== তথ্য: [ধরন g=গাযওয়াহ/s=সারিয়্যাহ, হি. সন, নাম, স্থান, ফলাফল, lat, lng, আর্টিকেল-ফাইল] =====
+   ক্রম ও সন প্রচলিত বর্ণনা অনুযায়ী; কিছুতে সূত্রভেদ আছে। */
+const D=[
+ ["g",2,O("ওয়াদ্দান (আল-আবওয়া)","Waddan (al-Abwa')"),O("আল-আবওয়া অঞ্চল","al-Abwa' region"),O("যুদ্ধ হয়নি; বনু যামরার সঙ্গে চুক্তি বলে বর্ণিত","No fighting; a pact with Banu Damra is reported"),23.17,39.0,null],
+ ["g",2,O("বুওয়াত","Buwat"),O("মদিনার পথে","Near Medina"),O("যুদ্ধ হয়নি","No fighting"),null,null,null],
+ ["g",2,O("যাতুল উশাইরা","Dhat al-'Ushayra"),O("ইয়ানবুর দিকে","Toward Yanbu'"),O("যুদ্ধ হয়নি; বনু মুদলিজের সঙ্গে চুক্তি বলে বর্ণিত","No fighting; a pact with Banu Mudlij is reported"),null,null,null],
+ ["s",2,O("নাখলা অভিযান","Expedition of Nakhla"),O("মক্কা ও তায়েফের মাঝামাঝি","Between Mecca and Ta'if"),O("ইবনুল হাদরামি নিহত; কুরাইশের সঙ্গে উত্তেজনা বাড়ে","Ibn al-Hadrami killed; tension with Quraysh rises"),null,null,null],
+ ["g",2,O("বদরের যুদ্ধ","Battle of Badr"),O("বদর উপত্যকা","Badr valley"),O("মুসলিমদের নির্ণায়ক বিজয়","Decisive Muslim victory"),23.7333,38.7667,"badr.html"],
+ ["g",2,O("বনু সুলাইম (কারকারাতুল কুদর)","Banu Sulaym (Qarqarat al-Kudr)"),O("নজদের দিকে","Toward Najd"),O("যুদ্ধ হয়নি","No fighting"),null,null,null],
+ ["g",2,O("বনু কাইনুকা","Banu Qaynuqa"),O("মদিনা","Medina"),O("অবরোধ; বনু কাইনুকা মদিনা ত্যাগ করে","Siege; Banu Qaynuqa leave Medina"),24.4672,39.6111,null],
+ ["g",2,O("আস-সাউইক","al-Sawiq"),O("মদিনার কাছে","Near Medina"),O("আবু সুফিয়ানের দলের পশ্চাদ্ধাবন; যুদ্ধ হয়নি","Pursuit of Abu Sufyan's party; no battle"),null,null,null],
+ ["g",3,O("উহুদের যুদ্ধ","Battle of Uhud"),O("উহুদ পাহাড়ের কাছে, মদিনা","By Mount Uhud, Medina"),O("মুসলিমদের উল্লেখযোগ্য ক্ষতি; ফলাফল নিয়ে আলোচনা আছে","Significant Muslim losses; the outcome is debated"),24.503,39.612,null],
+ ["g",3,O("হামরাউল আসাদ","Hamra' al-Asad"),O("মদিনার কাছে","Near Medina"),O("কুরাইশের পশ্চাদ্ধাবন; যুদ্ধ হয়নি","Pursuit of the Quraysh; no battle"),null,null,null],
+ ["s",4,O("রাজী' ও বি'রে মাউনা","al-Raji' and Bi'r Ma'una"),O("নজদ/হিজাযের পথে","Najd/Hijaz routes"),O("মুসলিম দলগুলো প্রতারণায় নিহত হয় বলে বর্ণিত","Muslim parties reported killed through treachery"),null,null,null],
+ ["g",4,O("বনু নাযির","Banu al-Nadir"),O("মদিনার উপকণ্ঠ","Outskirts of Medina"),O("অবরোধ; বনু নাযির মদিনা ত্যাগ করে","Siege; Banu al-Nadir leave Medina"),24.4672,39.6111,null],
+ ["g",4,O("বদরুল মাওইদ","Badr al-Maw'id"),O("বদর","Badr"),O("কুরাইশ আসেনি; যুদ্ধ হয়নি","The Quraysh did not come; no battle"),23.7333,38.7667,null],
+ ["g",5,O("দুমাতুল জান্দাল","Dumat al-Jandal"),O("উত্তর আরব","Northern Arabia"),O("যুদ্ধ হয়নি","No fighting"),29.81,39.87,null],
+ ["g",5,O("খন্দকের যুদ্ধ","Battle of the Trench (Khandaq)"),O("মদিনা","Medina"),O("কুরাইশ-জোটের অবরোধ ব্যর্থ হয়, জোট ফিরে যায়","The Quraysh-led coalition's siege fails; the coalition withdraws"),24.4672,39.6111,null],
+ ["g",5,O("বনু কুরাইযা","Banu Qurayza"),O("মদিনা","Medina"),O("অবরোধ ও সালিশি রায়; সংবেদনশীল অধ্যায় — আর্টিকেলে একাধিক সূত্রসহ","Siege and arbitration; a sensitive chapter — covered with multiple sources in the article"),24.4672,39.6111,null],
+ ["g",5,O("বনু মুস্তালিক (আল-মুরাইসী')","Banu al-Mustaliq (al-Muraysi')"),O("লোহিত সাগরের দিকে","Toward the Red Sea"),O("মুসলিমদের বিজয়; সন নিয়ে মতভেদ (৫ বা ৬ হি.)","Muslim success; date disputed (5 or 6 AH)"),null,null,null],
+ ["g",6,O("বনু লিহইয়ান","Banu Lihyan"),O("মক্কার দিকে","Toward Mecca"),O("যুদ্ধ হয়নি","No fighting"),null,null,null],
+ ["g",6,O("যু কারাদ (আল-গাবা)","Dhu Qarad (al-Ghaba)"),O("মদিনার উত্তরে","North of Medina"),O("লুট-হওয়া উট উদ্ধার","Looted camels recovered"),null,null,null],
+ ["g",6,O("হুদায়বিয়া","Hudaybiyya"),O("মক্কার কাছে","Near Mecca"),O("লড়াই হয়নি; হুদায়বিয়ার সন্ধি","No fighting; the Treaty of Hudaybiyya"),21.44,39.69,null],
+ ["g",7,O("খায়বার","Khaybar"),O("খায়বার, মদিনার উত্তরে","Khaybar, north of Medina"),O("মুসলিমদের বিজয়","Muslim victory"),25.70,39.29,null],
+ ["s",8,O("মূতা","Mu'ta"),O("সিরিয়া-সীমান্ত, বর্তমান জর্ডান","Syrian frontier, present-day Jordan"),O("তিন সেনাপতি শহিদ; খালিদ ইবনুল ওয়ালিদ বাহিনী ফিরিয়ে আনেন; ফলাফল নিয়ে মতভেদ","Three commanders killed; Khalid ibn al-Walid brings the army back; the outcome is debated"),31.09,35.70,null],
+ ["g",8,O("মক্কা বিজয়","Conquest of Mecca"),O("মক্কা","Mecca"),O("প্রায় বিনা যুদ্ধে মক্কায় প্রবেশ (রমজান ৮ হি.)","Entry into Mecca largely without fighting (Ramadan 8 AH)"),21.4225,39.8262,null],
+ ["g",8,O("হুনাইন","Hunayn"),O("হুনাইন উপত্যকা, মক্কা-তায়েফের মাঝে","Hunayn valley, between Mecca and Ta'if"),O("শুরুতে বিপর্যয়ের পর মুসলিমদের বিজয়","Muslim victory after an initial setback"),null,null,null],
+ ["g",8,O("তায়েফ অবরোধ","Siege of Ta'if"),O("তায়েফ","Ta'if"),O("অবরোধ তুলে নেওয়া হয়; শহর দখল হয়নি","Siege lifted; the town was not taken"),21.27,40.416,null],
+ ["g",9,O("তাবুক","Tabuk"),O("তাবুক, উত্তর আরব","Tabuk, northern Arabia"),O("বড় যুদ্ধ হয়নি; উত্তরের কয়েকটি গোত্রের সঙ্গে চুক্তি","No major battle; pacts with several northern groups"),28.384,36.566,null],
+ ["s",11,O("উসামার বাহিনী","Expedition of Usama"),O("সিরিয়া-সীমান্তের দিকে","Toward the Syrian frontier"),O("নবী ﷺ-এর অসুস্থতার সময় প্রস্তুত; ওফাতের পর আবু বকর (রা.) প্রেরণ করেন","Prepared during the Prophet's ﷺ illness; sent by Abu Bakr (r.a.) after his death"),null,null,null]
+];
+
+const UI={
+ bn:{home:"হোম",tocT:"এই পৃষ্ঠায়",print:"প্রিন্ট",h1:"নবী ﷺ-এর যুদ্ধ ও অভিযান",ar:"المغازي والسرايا",
+  sub:"গাযওয়াহ ও সারিয়্যাহর সূচি — ধরন, সময়, স্থান ও ফলাফলসহ। সীরাত সেকশনের অংশ।",
+  b1:"ক্যাটাগরি ২ · সীরাত",b2:"যুদ্ধ-অভিযান সূচি",
+  s_over:"ভূমিকা",s_list:"অভিযানের তালিকা",s_map:"মানচিত্র",s_note:"পদ্ধতি ও সতর্কতা",s_src:"সূত্র",
+  over:["মাগাযি (المغازي) হলো নবী ﷺ-এর যুদ্ধাভিযান-বিষয়ক সাহিত্য। পরিভাষায় যে অভিযানে নবী ﷺ নিজে অংশ নিয়েছেন তা 'গাযওয়াহ', আর যে অভিযান তিনি পাঠিয়েছেন কিন্তু নিজে ছিলেন না তা 'সারিয়্যাহ'।","গাযওয়াহর সংখ্যা সূত্রভেদে সাধারণত ১৯ থেকে ২৭-এর মধ্যে বলা হয়, সারিয়্যাহর সংখ্যা আরও বেশি এবং আরও ভিন্ন। এই সূচিতে আমরা সুপরিচিত ও প্রচলিত কয়েকটি অভিযান দিয়েছি; পূর্ণাঙ্গ তালিকা আর্টিকেল-সংযোজনের সঙ্গে সঙ্গে বাড়ানো ও যাচাই করা হবে।","'লড়াই হয়েছে' এমন অভিযানের সংখ্যা নিয়েও মতভেদ আছে। তাই এই পৃষ্ঠার ফলাফলের কলাম সংক্ষিপ্ত সারমাত্র।"],
+  q:"নাম বা স্থান খুঁজুন…",all:"সব",g:"গাযওয়াহ",s:"সারিয়্যাহ",
+  th:["#","অভিযান","হি. সন","ধরন","স্থান","ফলাফল (সংক্ষেপে)","আর্টিকেল"],
+  cnt:(n,t)=>`${num(n)}টি দেখানো হচ্ছে (মোট ${num(t)}টি)`,
+  art:"আর্টিকেল পড়ুন →",soon:"শীঘ্রই",
+  mapcap:"মানচিত্র: যেসব অভিযানের স্থান মোটামুটি নিশ্চিত শুধু সেগুলোর মার্কার দেওয়া হয়েছে; স্থানাঙ্ক আনুমানিক। মদিনার কাছের একাধিক অভিযান একই মার্কারে পড়ে।",
+  notes:["হিজরি সন থেকে খ্রিষ্টাব্দ রূপান্তর আনুমানিক ও দুই বছরজুড়ে; সঠিক তারিখ প্রতিটি আর্টিকেলে সূত্রসহ থাকবে।","বনু কুরাইযা, বনু নাযির ও বনু কাইনুকা অধ্যায়ে একাধিক সূত্র পাশাপাশি দেওয়া হবে।","সংখ্যা (সৈন্য, হতাহত) এই সূচিতে দেওয়া হয়নি — কারণ সূত্রভেদ বেশি; আর্টিকেলে প্রচলিত সংখ্যা ও বিকল্প মত আলাদাভাবে থাকবে।","যেখানে ফলাফল নিয়ে মতভেদ আছে (উহুদ, মূতা প্রভৃতি) সেখানে সেটি স্পষ্ট লেখা আছে।"],
+  src:"প্রধান সূত্র: ইবনে ইসহাক–ইবনে হিশাম, আল-ওয়াকিদি (কিতাবুল মাগাযি), ইবনে সা'দ, তাবারি, ইবনে কাসির, সহিহ বুখারি (কিতাবুল মাগাযি); আধুনিক: Watt (Muhammad at Medina), Encyclopaedia of Islam (২য় সং.)। বিস্তারিত ফুটনোট প্রতিটি আর্টিকেলে।"},
+ en:{home:"Home",tocT:"On this page",print:"Print",h1:"The Prophet's ﷺ Campaigns",ar:"المغازي والسرايا",
+  sub:"An index of ghazwas and sariyyas — type, date, place and outcome. Part of the Seerah section.",
+  b1:"Category 2 · Seerah",b2:"Campaign index",
+  s_over:"Introduction",s_list:"List of campaigns",s_map:"Map",s_note:"Method and Cautions",s_src:"Sources",
+  over:["Maghazi (المغازي) is the literature on the Prophet's ﷺ campaigns. By convention a 'ghazwa' is a campaign the Prophet ﷺ took part in himself, and a 'sariyya' one he dispatched without being present.","The number of ghazwas is usually given as between 19 and 27 depending on the source; the number of sariyyas is higher and varies more. This index lists well-known and commonly cited campaigns; the full list will be extended and verified as articles are added.","The number of campaigns in which actual fighting took place is also debated. The outcome column here is therefore only a brief summary."],
+  q:"Search by name or place…",all:"All",g:"Ghazwa",s:"Sariyya",
+  th:["#","Campaign","AH","Type","Place","Outcome (brief)","Article"],
+  cnt:(n,t)=>`Showing ${n} of ${t}`,
+  art:"Read the article →",soon:"soon",
+  mapcap:"Map: markers appear only for campaigns whose location is reasonably certain; coordinates are approximate. Several campaigns near Medina share one marker.",
+  notes:["The AH-to-CE conversion is approximate and spans two years; exact dates will be given with sources in each article.","The chapters on Banu Qurayza, Banu al-Nadir and Banu Qaynuqa will set several sources side by side.","Troop and casualty figures are deliberately omitted from this index because sources differ widely; each article will give the common figure and the alternatives separately.","Where the outcome is debated (Uhud, Mu'ta and others) this is stated plainly."],
+  src:"Main sources: Ibn Ishaq–Ibn Hisham, al-Waqidi (Kitab al-Maghazi), Ibn Sa'd, al-Tabari, Ibn Kathir, Sahih al-Bukhari (Kitab al-Maghazi); modern: Watt (Muhammad at Medina), Encyclopaedia of Islam (2nd ed.). Detailed footnotes appear in each article."}
+};
+
+function rows(){
+ const u=UI[lang],q=qry.trim().toLowerCase();
+ return D.map((d,i)=>({d,i})).filter(({d})=>(flt==="all"||d[0]===flt)&&(!q||(d[2].bn+d[2].en+d[3].bn+d[3].en).toLowerCase().includes(q)));
+}
+function fill(){
+ const u=UI[lang],r=rows();
+ $("#tb").innerHTML=r.map(({d,i})=>`<tr><td>${num(i+1)}</td><td><b>${L(d[2])}</b></td><td>${num(d[1])}<br><small style="color:var(--mute)">${CE[d[1]]?(lang==="bn"?bnum(CE[d[1]]):CE[d[1]]):""} ${lang==="bn"?"খ্রি.":"CE"}</small></td><td><span class="ty ${d[0]}">${d[0]==="g"?u.g:u.s}</span></td><td>${L(d[3])}</td><td>${L(d[4])}</td><td>${d[7]?`<a class="lk" href="${d[7]}">${u.art}</a>`:`<span style="color:var(--mute);font-size:.8rem">${u.soon}</span>`}</td></tr>`).join("");
+ $("#cnt").textContent=u.cnt(r.length,D.length);
+}
+function render(){
+ const u=UI[lang];document.body.dataset.lang=lang;document.documentElement.lang=lang;
+ const sec=[["over",u.s_over],["list",u.s_list],["map",u.s_map],["note",u.s_note],["src",u.s_src]];
+ $("#app").innerHTML=`
+ <header><div class="nav"><a class="logo" href="index.html">☪ Ummah Chronicles</a>
+  <a class="l" href="index.html">${u.home}</a><a class="l" href="seerah.html">${lang==="bn"?"সীরাত":"Seerah"}</a>
+  <div class="tools"><select id="lang"><option value="bn">বাংলা</option><option value="en">English</option></select>
+  <button class="t" id="dark">🌙</button><button class="t" id="fminus">A−</button><button class="t" id="fplus">A+</button></div></div></header>
+ <div class="hero"><div class="in"><div class="crumb"><a href="index.html">${u.home}</a> › <a href="seerah.html">${lang==="bn"?"সীরাত":"Seerah"}</a> › ${u.b2}</div>
+  <div class="ar">${u.ar}</div><h1>${u.h1}</h1><p>${u.sub}</p>
+  <div class="badges"><span class="bdg">${u.b1}</span><span class="bdg">${u.b2}</span></div></div></div>
+ <div class="wrap"><article>
+  <h2 id="over">${u.s_over}</h2>${u.over.map(p=>`<p>${p}</p>`).join("")}
+  <h2 id="list">${u.s_list}</h2>
+  <div class="ctl"><input id="q" type="search" placeholder="${u.q}" value="${qry.replace(/"/g,"&quot;")}">
+   ${["all","g","s"].map(k=>`<button class="chip ${flt===k?"on":""}" data-f="${k}">${u[k]}</button>`).join("")}</div>
+  <div class="cnt" id="cnt"></div>
+  <div class="tw"><table class="mg"><thead><tr>${u.th.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody id="tb"></tbody></table></div>
+  <h2 id="map">${u.s_map}</h2><div id="map"></div><div class="cap">${u.mapcap}</div>
+  <h2 id="note">${u.s_note}</h2>${u.notes.map(n=>`<div class="var">${n}</div>`).join("")}
+  <h2 id="src">${u.s_src}</h2><div class="note">${u.src}</div>
+ </article></div>
+ <footer>© 2026 Ummah Chronicles</footer>`;
+ $("#lang").value=lang;
+ $("#lang").onchange=e=>{lang=e.target.value;store.set("lang",lang);render()};
+ $("#dark").onclick=()=>{const d=document.documentElement,on=d.dataset.theme==="dark";d.dataset.theme=on?"":"dark";store.set("theme",on?"":"dark")};
+ let fs=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--fs"))||17;
+ $("#fplus").onclick=()=>{fs=Math.min(24,fs+1);document.documentElement.style.setProperty("--fs",fs+"px")};
+ $("#fminus").onclick=()=>{fs=Math.max(13,fs-1);document.documentElement.style.setProperty("--fs",fs+"px")};
+ $("#q").oninput=e=>{qry=e.target.value;fill()};
+ document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{flt=b.dataset.f;document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x===b));fill()});
+ fill();
+ const LF=window.L;
+ if(LF&&LF.map){try{
+  const m=LF.map("map",{scrollWheelZoom:false}).setView([25.5,38.5],5);
+  LF.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap contributors"}).addTo(m);
+  const by={};
+  D.forEach(d=>{if(d[5]==null)return;const k=d[5]+","+d[6];(by[k]=by[k]||{lat:d[5],lng:d[6],items:[]}).items.push(d)});
+  Object.values(by).forEach(g=>LF.marker([g.lat,g.lng]).addTo(m).bindPopup(g.items.map(d=>`<b>${L(d[2])}</b> (${num(d[1])} ${lang==="bn"?"হি.":"AH"})`).join("<br>")));
+ }catch(e){}}
+ else $("#map").innerHTML='<div style="padding:30px;color:var(--mute)">Map could not load (Leaflet).</div>';
+}
+window.addEventListener("scroll",()=>{const h=document.documentElement;$("#prog").style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight||1)*100)+"%"});
+render();
+</script>
+</body>
+</html>
